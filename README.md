@@ -1,31 +1,57 @@
 # EM Calculator
 
-EM Calculator is a graphical user interface (GUI) application built using Python and the `ttkbootstrap` library. It provides tools for calculating various electromagnetic parameters such as aperture efficiency and relative bandwidth.
+EM Calculator is a graphical user interface (GUI) application for calculating various electromagnetic parameters such as relative bandwidth and aperture efficiency. The application is built using Python and the `ttkbootstrap` library for a modern look and feel.
 
 ## Features
 
-- **Aperture Efficiency Calculation**: Calculate the aperture efficiency of an antenna based on frequency, gain, and area.
-- **Relative Bandwidth Calculation**: Calculate the relative bandwidth of a signal based on low and high frequencies.
+- Calculate relative bandwidth
+- Calculate aperture efficiency
+- User-friendly interface with `ttkbootstrap` themes
 
-## Requirements
+## Installation and Rebuilding
+
+### Prerequisites
 
 - Python 3.x
 - `ttkbootstrap` library
-- `tkinter` library (usually included with Python)
 
-## Installation and ReBuild
+You can install the required library using pip:
 
-1. Clone the repository:
-    ```sh
-    git clone https://github.com/SamDu1998/em-calculator.git
-    cd em-calculator
-    ```
+```sh
+pip install ttkbootstrap
+```
 
-2. Install the required libraries:
-    ```sh
-    pip install ttkbootstrap
-    ```
+### Running the Application
+
+To run the application, execute the following command:
+
+```sh
+python main.py
+```
+
+### Download Executable
+
+You can download the executable file from the [GitHub Releases](https://github.com/SamDu1998/EMCalculator/releases) page. This allows you to run the application without needing to install Python or any dependencies.
+
+## Building the Executable
+
+If you want to build the executable yourself, you can use `pyinstaller`. Run the following command:
+
+```sh
+pyinstaller --name EMCalculator --onefile --windowed --icon=icon.png --noconsole main.py
+```
 
 ## Usage
 
-Download the .exe file in Releases and run it.
+1. Launch the application.
+2. Navigate through the tabs to access different calculators.
+3. Enter the required values and select the appropriate units.
+4. Click the "Calculate" button to see the results.
+
+## Author
+
+- Sam
+
+## License
+
+This project is licensed under the MIT License.
