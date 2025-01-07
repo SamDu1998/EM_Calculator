@@ -1,9 +1,27 @@
-# relative_bandwidth.py
 import tkinter as tk
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import PRIMARY
 from tkinter import messagebox
-from utils import update_frequency
+
+# Conversion factors
+conversion_factors = {"Hz": 1, "kHz": 1e3, "MHz": 1e6, "GHz": 1e9}
+
+def convert_to_base(value, unit):
+    return value * conversion_factors[unit]
+
+def convert_from_base(value, unit):
+    return value / conversion_factors[unit]
+
+def update_frequency(entry, new_unit, old_unit):
+    try:
+        value = float(entry.get())
+        value_in_base = convert_to_base(value, old_unit)
+        new_value = convert_from_base(value_in_base, new_unit)
+        entry.delete(0, tk.END)
+        entry.insert(0, f"{new_value:.2f}")
+    except ValueError:
+        entry.delete(0, tk.END)
+        entry.insert(0, "0")
 
 def create_relative_bandwidth_tab(notebook, modern_font):
     tab1 = ttk.Frame(notebook)
@@ -25,7 +43,7 @@ def create_relative_bandwidth_tab(notebook, modern_font):
     unit_label = ttk.Label(frame, text="Select Unit:", font=modern_font)
     unit_label.grid(row=0, column=0, sticky=tk.W, pady=5)
 
-    unit_menu = ttk.OptionMenu(frame, unit_var, "Hz", "Hz", "kHz", "MHz", "GHz", command=lambda _: update_frequency(low_freq_entry, unit_var, prev_unit_var))
+    unit_menu = ttk.OptionMenu(frame, unit_var, "Hz", "Hz", "kHz", "MHz", "GHz", command=lambda _: update_units())
     unit_menu.grid(row=0, column=1, pady=5)
 
     low_freq_label = ttk.Label(frame, text="Low Frequency:", font=modern_font)
@@ -49,4 +67,40 @@ def create_relative_bandwidth_tab(notebook, modern_font):
     calculate_button = ttk.Button(frame, text="Calculate", command=lambda: calculate_bandwidth(low_freq_entry, high_freq_entry, abs_bandwidth_label, rel_bandwidth_label, unit_var), bootstyle=PRIMARY)
     calculate_button.grid(row=3, column=0, columnspan=2, pady=10)
 
-    unit_var.trace_add("write", lambda *args: prev_unit_var.set(unit_var.get()))
+    def update_units():
+        old_unit = prev_unit_var.get()
+        new_unit = unit_var.get()
+        if old_unit != new_unit:
+            update_frequency(low_freq_entry, new_unit, old_unit)
+            update_frequency(high_freq_entry, new_unit, old_unit)
+            prev_unit_var.set(new_unit)
+
+    unit_var.trace_add("write", lambda *args: update_units())
+
+def calculate_bandwidth(low_freq_entry, high_freq_entry, abs_bandwidth_label, rel_bandwidth_label, unit_var):
+    try:
+        low_freq = float(low_freq_entry.get())
+        high_freq = float(high_freq_entry.get())
+
+        # Convert both to base unit (Hz) for calculation
+        low_freq_hz = convert_to_base(low_freq, unit_var.get())
+        high_freq_hz = convert_to_base(high_freq, unit_var.get())
+
+        absolute_bw = high_freq_hz - low_freq_hz
+        relative_bw = absolute_bw / low_freq_hz
+
+        # Convert absolute bandwidth back to the display unit
+        abs_bw_display = convert_from_base(absolute_bw, unit_var.get())
+        rel_bw_display = relative_bw  # Relative bandwidth is dimensionless
+
+        abs_bandwidth_label.config(state='normal')
+        abs_bandwidth_label.delete(1.0, tk.END)
+        abs_bandwidth_label.insert(tk.END, f"{abs_bw_display:.2f} {unit_var.get()}")
+        abs_bandwidth_label.config(state='disabled')
+
+        rel_bandwidth_label.config(state='normal')
+        rel_bandwidth_label.delete(1.0, tk.END)
+        rel_bandwidth_label.insert(tk.END, f"{rel_bw_display:.2%}")
+        rel_bandwidth_label.config(state='disabled')
+    except ValueError:
+        messagebox.showerror("Error", "Please enter valid numeric values.")
