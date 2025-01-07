@@ -13,7 +13,7 @@ EM Calculator is a graphical user interface (GUI) application built using Python
 - `ttkbootstrap` library
 - `tkinter` library (usually included with Python)
 
-## Installation
+## Installation and ReBuild
 
 1. Clone the repository:
     ```sh
@@ -28,6 +28,4 @@ EM Calculator is a graphical user interface (GUI) application built using Python
 
 ## Usage
 
-Run the application using the following command:
-```sh
-python main.py
+Download the .exe file in Releases and run it.
