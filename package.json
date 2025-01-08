@@ -1,0 +1,27 @@
+{
+  "name": "your-app-name",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "electron": "^latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SamDu1998/Relative_Calc.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SamDu1998/Relative_Calc/issues"
+  },
+  "homepage": "https://github.com/SamDu1998/Relative_Calc#readme",
+  "devDependencies": {
+    "electron": "^33.3.1"
+  }
+}

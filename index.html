@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabbed Interface</title>
+    <style>
+        #tabs {
+            display: flex;
+            cursor: pointer;
+        }
+        .tab {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-bottom: none;
+            margin-right: 5px;
+        }
+        .tab-content {
+            display: none;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        .active-tab {
+            display: block;
+        }
+        .active {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+<div id="tabs">
+    <div class="tab" data-tab="bandwidth">相对带宽</div>
+    <div class="tab" data-tab="efficiency">口径效率</div>
+    <div class="tab" data-tab="tbd">TBD</div>
+</div>
+<div id="tab-contents">
+    <div id="bandwidth" class="tab-content">
+        <label for="min-frequency">最低工作频率 (Hz):</label>
+        <input type="number" id="min-frequency" name="min-frequency">
+        <br>
+        <label for="max-frequency">最高工作频率 (Hz):</label>
+        <input type="number" id="max-frequency" name="max-frequency">
+        <br>
+        <div id="bandwidth-result"></div>
+    </div>
+<div id="efficiency" class="tab-content">
+    <label for="frequency">频率 (Hz):</label>
+    <input type="number" id="frequency" name="frequency">
+    <br>
+    <label for="antenna-gain">天线增益 (dBi):</label>
+    <input type="number" id="antenna-gain" name="antenna-gain">
+    <br>
+    <label for="antenna-area">天线面积 (m²):</label>
+    <input type="number" id="antenna-area" name="antenna-area">
+    <br>
+    <button id="calculate-efficiency">计算口径效率</button>
+    <br>
+    <div id="efficiency-result"></div>
+</div>
+    <div id="tbd" class="tab-content">TBD - 待实现的功能</div>
+</div>
+
+<script src="renderer.js"></script>
+</body>
+</html>
