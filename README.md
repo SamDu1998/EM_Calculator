@@ -1,56 +1,50 @@
 # EM Calculator
 
-EM Calculator is a graphical user interface (GUI) application for calculating various electromagnetic parameters such as relative bandwidth and aperture efficiency. The application is built using Python and the `ttkbootstrap` library for a modern look and feel.
+This project is an Electron-based application that provides a tabbed interface for calculating relative bandwidth and aperture efficiency. The application supports multiple languages (English and Chinese).
 
 ## Features
 
-- Calculate relative bandwidth
-- Calculate aperture efficiency
-- User-friendly interface with `ttkbootstrap` themes
+- Tabbed interface with three tabs: Relative Bandwidth, Aperture Efficiency, and TBD.
+- Calculate relative bandwidth based on minimum and maximum frequency inputs.
+- Calculate aperture efficiency based on frequency, antenna gain, and antenna area inputs.
+- Language switcher to toggle between English and Chinese.
 
-## Installation and Rebuilding
+## Installation
 
-### Prerequisites
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/SamDu1998/electron-tabbed-interface.git
+    cd electron-tabbed-interface
+    ```
 
-- Python 3.x
-- `ttkbootstrap` library
+2. Install dependencies:
+    ```sh
+    npm install
+    ```
 
-You can install the required library using pip:
-
-```sh
-pip install ttkbootstrap
-```
-
-### Running the Application
-
-To run the application, execute the following command:
-
-```sh
-python main.py
-```
-
-### Download Executable
-
-You can download the executable file from the [GitHub Releases](https://github.com/SamDu1998/EMCalculator/releases) page. This allows you to run the application without needing to install Python or any dependencies.
-
-## Building the Executable
-
-If you want to build the executable yourself, you can use `pyinstaller`. Run the following command:
-
-```sh
-pyinstaller --name EMCalculator --onefile --windowed --icon=icon.png --noconsole main.py
-```
+3. Ensure you have Python installed on your system.
 
 ## Usage
 
-1. Launch the application.
-2. Navigate through the tabs to access different calculators.
-3. Enter the required values and select the appropriate units.
-4. Click the "Calculate" button to see the results.
+1. Start the application:
+    ```sh
+    npm start
+    ```
 
-## Author
+2. Use the tabbed interface to navigate between different functionalities:
+    - **Relative Bandwidth**: Enter minimum and maximum frequency values to calculate relative and absolute bandwidth.
+    - **Aperture Efficiency**: Enter frequency, antenna gain, and antenna area values to calculate aperture efficiency.
+    - **TBD**: Placeholder for future features.
 
-- Sam
+3. Switch languages using the "Language" menu in the application.
+
+## Project Structure
+
+- `main.js`: Main process script that creates the application window and handles IPC communication.
+- `preload.js`: Preload script that exposes APIs to the renderer process.
+- `renderer.js`: Renderer process script that handles UI interactions and calculations.
+- `index.html`: HTML file defining the structure of the tabbed interface.
+- `calculate_bandwidth.py`: Python script for calculating bandwidth (to be implemented).
 
 ## License
 
