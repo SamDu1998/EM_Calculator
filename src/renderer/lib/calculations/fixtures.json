@@ -1,0 +1,109 @@
+{
+  "bandwidth": [
+    {
+      "name": "ISM_2_4_GHz",
+      "fminHz": 2400000000.0,
+      "fmaxHz": 2483500000.0,
+      "expected": {
+        "absoluteHz": 83500000.0,
+        "centerHz": 2441750000.0,
+        "relativePercent": 3.419678509265895,
+        "fractional": 0.03419678509265895
+      }
+    },
+    {
+      "name": "X_band_8_12_GHz",
+      "fminHz": 8000000000.0,
+      "fmaxHz": 12000000000.0,
+      "expected": {
+        "absoluteHz": 4000000000.0,
+        "centerHz": 10000000000.0,
+        "relativePercent": 40.0,
+        "fractional": 0.4
+      }
+    },
+    {
+      "name": "narrow_HF_1000_1010_Hz",
+      "fminHz": 1000.0,
+      "fmaxHz": 1010.0,
+      "expected": {
+        "absoluteHz": 10.0,
+        "centerHz": 1005.0,
+        "relativePercent": 0.9950248756218906,
+        "fractional": 0.009950248756218905
+      }
+    },
+    {
+      "name": "cellular_LTE_band_3",
+      "fminHz": 1710000000.0,
+      "fmaxHz": 1785000000.0,
+      "expected": {
+        "absoluteHz": 75000000.0,
+        "centerHz": 1747500000.0,
+        "relativePercent": 4.291845493562231,
+        "fractional": 0.04291845493562232
+      }
+    },
+    {
+      "name": "wide_UWB",
+      "fminHz": 3100000000.0,
+      "fmaxHz": 10600000000.0,
+      "expected": {
+        "absoluteHz": 7500000000.0,
+        "centerHz": 6850000000.0,
+        "relativePercent": 109.48905109489051,
+        "fractional": 1.094890510948905
+      }
+    }
+  ],
+  "apertureEfficiency": [
+    {
+      "name": "X_band_dish_10GHz_30dBi_1m2",
+      "frequencyHz": 10000000000.0,
+      "gainDbi": 30.0,
+      "physicalAreaM2": 1.0,
+      "expected": {
+        "wavelengthM": 0.0299792458,
+        "effectiveAreaM2": 0.07152066466270221,
+        "efficiencyPercent": 7.152066466270221,
+        "exceedsPhysicalLimit": false
+      }
+    },
+    {
+      "name": "S_band_dish_3GHz_25dBi_0p5m2",
+      "frequencyHz": 3000000000.0,
+      "gainDbi": 25.0,
+      "physicalAreaM2": 0.5,
+      "expected": {
+        "wavelengthM": 0.09993081933333334,
+        "effectiveAreaM2": 0.25129800011473036,
+        "efficiencyPercent": 50.259600022946074,
+        "exceedsPhysicalLimit": false
+      }
+    },
+    {
+      "name": "Ku_band_horn_14GHz_18dBi_0p01m2",
+      "frequencyHz": 14000000000.0,
+      "gainDbi": 18.0,
+      "physicalAreaM2": 0.01,
+      "expected": {
+        "wavelengthM": 0.021413747,
+        "effectiveAreaM2": 0.002302371869950867,
+        "efficiencyPercent": 23.02371869950867,
+        "exceedsPhysicalLimit": false
+      }
+    },
+    {
+      "name": "over_unity_warning",
+      "frequencyHz": 1000000000.0,
+      "gainDbi": 40.0,
+      "physicalAreaM2": 0.5,
+      "expected": {
+        "wavelengthM": 0.299792458,
+        "effectiveAreaM2": 71.5206646627022,
+        "efficiencyPercent": 14304.13293254044,
+        "exceedsPhysicalLimit": true
+      }
+    }
+  ]
+}
