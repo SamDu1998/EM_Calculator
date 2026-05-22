@@ -1,0 +1,178 @@
+/* ---------------------------------------------------------------
+   Glassmorphism layer system
+   1. Base gradient is applied to <body> in global.css.
+   2. .blobs renders three slow-moving translucent color blobs.
+   3. .grain overlays SVG turbulence noise.
+   4. .glass-card is the foreground translucent surface.
+--------------------------------------------------------------- */
+
+.blobs {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.blobs > span {
+  position: absolute;
+  display: block;
+  width: 42vmax;
+  height: 42vmax;
+  border-radius: 50%;
+  filter: blur(80px);
+  mix-blend-mode: screen;
+  opacity: 0.55;
+  will-change: transform;
+}
+
+.blobs__one {
+  top: -10vmax;
+  left: -8vmax;
+  background: radial-gradient(circle at center, var(--accent-violet), transparent 70%);
+  animation: blobDrift1 38s var(--ease-out-expo) infinite alternate;
+}
+
+.blobs__two {
+  bottom: -14vmax;
+  right: -10vmax;
+  background: radial-gradient(circle at center, var(--accent-cyan), transparent 70%);
+  animation: blobDrift2 44s var(--ease-out-expo) infinite alternate;
+}
+
+.blobs__three {
+  top: 30%;
+  right: 12%;
+  width: 28vmax;
+  height: 28vmax;
+  background: radial-gradient(circle at center, var(--accent-amber), transparent 70%);
+  opacity: 0.32;
+  animation: blobDrift3 52s var(--ease-out-expo) infinite alternate;
+}
+
+@keyframes blobDrift1 {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(8vw, 5vh, 0) scale(1.08);
+  }
+  100% {
+    transform: translate3d(-4vw, 12vh, 0) scale(0.96);
+  }
+}
+
+@keyframes blobDrift2 {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-6vw, -8vh, 0) scale(1.1);
+  }
+  100% {
+    transform: translate3d(4vw, 4vh, 0) scale(0.94);
+  }
+}
+
+@keyframes blobDrift3 {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-8vw, 6vh, 0) scale(0.9);
+  }
+  100% {
+    transform: translate3d(6vw, -4vh, 0) scale(1.06);
+  }
+}
+
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  background-size: 220px 220px;
+  background-repeat: repeat;
+}
+
+/* Glass card surface */
+.glass-card {
+  position: relative;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  box-shadow:
+    inset 0 1px 0 0 var(--glass-highlight),
+    var(--glass-shadow);
+  isolation: isolate;
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.22),
+    rgba(255, 255, 255, 0.04) 30%,
+    rgba(255, 255, 255, 0) 60%,
+    rgba(255, 255, 255, 0.06)
+  );
+  -webkit-mask:
+    linear-gradient(#000, #000) content-box,
+    linear-gradient(#000, #000);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000, #000) content-box,
+    linear-gradient(#000, #000);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.glass-card__heading {
+  font-size: var(--text-xl);
+  margin-bottom: var(--space-1);
+}
+
+.glass-card__description {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-5);
+  font-family: var(--font-mono);
+}
+
+.glass-card__body {
+  display: flex;
+  flex-direction: column;
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .glass-card {
+    background: rgba(20, 28, 50, 0.92);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass-card {
+    background: rgba(20, 28, 50, 0.96);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .blobs,
+  .grain {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blobs > span {
+    animation: none !important;
+  }
+}

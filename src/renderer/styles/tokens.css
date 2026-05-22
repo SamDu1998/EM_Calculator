@@ -1,0 +1,71 @@
+:root {
+  /* Color palette — dark luxury base with glass accents */
+  --bg-base-0: #06090f;
+  --bg-base-1: #0b0f1a;
+  --bg-base-2: #131a2e;
+  --bg-base-3: #0a1228;
+
+  /* Accent blobs */
+  --accent-violet: oklch(62% 0.21 290);
+  --accent-cyan: oklch(70% 0.16 215);
+  --accent-amber: oklch(78% 0.17 70);
+
+  /* Glass surface */
+  --glass-bg: rgba(255, 255, 255, 0.045);
+  --glass-bg-strong: rgba(255, 255, 255, 0.07);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-border-strong: rgba(255, 255, 255, 0.18);
+  --glass-highlight: rgba(255, 255, 255, 0.18);
+  --glass-shadow: 0 24px 48px -16px rgba(0, 0, 0, 0.55);
+
+  /* Text */
+  --text-primary: oklch(96% 0.01 250);
+  --text-secondary: oklch(78% 0.02 250);
+  --text-tertiary: oklch(58% 0.02 250);
+  --text-onerror: oklch(85% 0.12 25);
+  --text-onok: oklch(82% 0.16 150);
+
+  /* Semantic */
+  --error: oklch(60% 0.2 25);
+  --error-bg: oklch(28% 0.1 25 / 0.25);
+  --success: oklch(60% 0.18 150);
+  --warning: oklch(75% 0.18 80);
+  --warning-bg: oklch(30% 0.08 80 / 0.28);
+
+  /* Typography */
+  --font-sans:
+    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei',
+    sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+  --text-hero: clamp(2rem, 1.5rem + 1.5vw, 2.5rem);
+
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 18px;
+  --radius-xl: 26px;
+
+  /* Motion */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 450ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}

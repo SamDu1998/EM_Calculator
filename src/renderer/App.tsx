@@ -1,0 +1,37 @@
+import { useState } from 'react'
+import { AppShell } from './components/AppShell'
+import { GradientBlobs } from './components/backgrounds/GradientBlobs'
+import { GrainOverlay } from './components/backgrounds/GrainOverlay'
+import { Tabs } from './components/Tabs'
+import { ApertureEfficiencyTab } from './features/aperture-efficiency/ApertureEfficiencyTab'
+import { BandwidthTab } from './features/bandwidth/BandwidthTab'
+import { TbdTab } from './features/tbd/TbdTab'
+import { useTranslation } from './i18n/useTranslation'
+
+export type TabId = 'bandwidth' | 'efficiency' | 'tbd'
+
+export function App(): JSX.Element {
+  const { t } = useTranslation()
+  const [activeTab, setActiveTab] = useState<TabId>('bandwidth')
+
+  const tabs = [
+    { id: 'bandwidth' as const, label: t('tabs.bandwidth') },
+    { id: 'efficiency' as const, label: t('tabs.efficiency') },
+    { id: 'tbd' as const, label: t('tabs.tbd') },
+  ]
+
+  return (
+    <>
+      <GradientBlobs />
+      <GrainOverlay />
+      <AppShell>
+        <Tabs tabs={tabs} activeId={activeTab} onChange={setActiveTab} />
+        <main className="app-main">
+          {activeTab === 'bandwidth' && <BandwidthTab />}
+          {activeTab === 'efficiency' && <ApertureEfficiencyTab />}
+          {activeTab === 'tbd' && <TbdTab />}
+        </main>
+      </AppShell>
+    </>
+  )
+}
