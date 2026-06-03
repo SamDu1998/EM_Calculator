@@ -5,18 +5,18 @@
   --bg-base-2: #131a2e;
   --bg-base-3: #0a1228;
 
-  /* Accent blobs */
-  --accent-violet: oklch(62% 0.21 290);
-  --accent-cyan: oklch(70% 0.16 215);
-  --accent-amber: oklch(78% 0.17 70);
+  /* Accent blobs - Enhanced for Liquid Glass */
+  --accent-violet: oklch(68% 0.28 290);
+  --accent-cyan: oklch(75% 0.22 215);
+  --accent-amber: oklch(82% 0.24 70);
 
-  /* Glass surface */
-  --glass-bg: rgba(255, 255, 255, 0.045);
-  --glass-bg-strong: rgba(255, 255, 255, 0.07);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glass-border-strong: rgba(255, 255, 255, 0.18);
-  --glass-highlight: rgba(255, 255, 255, 0.18);
-  --glass-shadow: 0 24px 48px -16px rgba(0, 0, 0, 0.55);
+  /* Glass surface - Liquid Glass inspired */
+  --glass-bg: rgba(18, 24, 40, 0.65);
+  --glass-bg-strong: rgba(22, 30, 48, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --glass-border-strong: rgba(255, 255, 255, 0.25);
+  --glass-highlight: rgba(255, 255, 255, 0.25);
+  --glass-shadow: 0 24px 48px -16px rgba(0, 0, 0, 0.6), 0 8px 16px -8px rgba(0, 0, 0, 0.4);
 
   /* Text */
   --text-primary: oklch(96% 0.01 250);
@@ -34,7 +34,7 @@
 
   /* Typography */
   --font-sans:
-    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei',
+    'Microsoft YaHei', '微软雅黑', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial,
     sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
 

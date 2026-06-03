@@ -14,6 +14,7 @@ function createWindow(): BrowserWindow {
     minHeight: 540,
     show: false,
     autoHideMenuBar: false,
+    frame: false,
     backgroundColor: '#0b0f1a',
     title: 'EM Calculator',
     icon: join(__dirname, '../../resources/icon.png'),
@@ -31,6 +32,15 @@ function createWindow(): BrowserWindow {
     if (is.dev) {
       mainWindow.webContents.openDevTools({ mode: 'detach' })
     }
+  })
+
+  // Send maximize state changes to renderer
+  mainWindow.on('maximize', () => {
+    mainWindow.webContents.send('window:maximized', true)
+  })
+
+  mainWindow.on('unmaximize', () => {
+    mainWindow.webContents.send('window:maximized', false)
   })
 
   mainWindow.webContents.on('render-process-gone', (_event, details) => {

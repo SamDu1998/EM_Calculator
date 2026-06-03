@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { AppShell } from './components/AppShell'
+import { TitleBar } from './components/TitleBar'
 import { GradientBlobs } from './components/backgrounds/GradientBlobs'
 import { GrainOverlay } from './components/backgrounds/GrainOverlay'
 import { Tabs } from './components/Tabs'
@@ -22,6 +23,7 @@ export function App(): JSX.Element {
 
   return (
     <>
+      <TitleBar />
       <GradientBlobs />
       <GrainOverlay />
       <AppShell>

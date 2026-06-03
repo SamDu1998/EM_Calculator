@@ -68,13 +68,88 @@ textarea {
   border-radius: 4px;
 }
 
+/* Title bar - Liquid Glass style */
+.titlebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(18, 24, 40, 0.7);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(24px) saturate(200%) brightness(1.1);
+  -webkit-backdrop-filter: blur(24px) saturate(200%) brightness(1.1);
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  z-index: 1000;
+  user-select: none;
+}
+
+.titlebar__drag {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-4);
+  -webkit-app-region: drag;
+}
+
+.titlebar__title {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0.01em;
+}
+
+.titlebar__controls {
+  display: flex;
+  height: 100%;
+  -webkit-app-region: no-drag;
+}
+
+.titlebar__btn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  width: 46px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: background-color var(--duration-fast), color var(--duration-fast);
+  cursor: pointer;
+  padding: 0;
+}
+
+.titlebar__btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+}
+
+.titlebar__btn--close:hover {
+  background: #e81123;
+  color: #ffffff;
+}
+
+.titlebar__btn:active {
+  transform: none;
+}
+
+.titlebar__btn svg {
+  flex-shrink: 0;
+}
+
 /* App shell */
 .app-shell {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  padding: var(--space-6) clamp(var(--space-5), 4vw, var(--space-8));
-  gap: var(--space-6);
+  padding: clamp(var(--space-4), 3vh, var(--space-6)) clamp(var(--space-4), 4vw, var(--space-8));
+  padding-top: calc(32px + clamp(var(--space-4), 3vh, var(--space-6)));
+  gap: clamp(var(--space-4), 3vh, var(--space-6));
   max-width: 1100px;
   width: 100%;
   margin: 0 auto;
@@ -193,9 +268,9 @@ textarea {
 /* Form grid */
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: var(--space-4);
-  margin-bottom: var(--space-5);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: clamp(var(--space-3), 2vw, var(--space-4));
+  margin-bottom: clamp(var(--space-4), 2.5vh, var(--space-5));
 }
 
 .field {
@@ -282,8 +357,8 @@ textarea {
 
 .result__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: var(--space-3) var(--space-5);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: clamp(var(--space-2), 1.5vh, var(--space-3)) clamp(var(--space-3), 3vw, var(--space-5));
   margin: 0;
 }
 
@@ -424,11 +499,9 @@ textarea {
 
 @keyframes tabPanelIn {
   from {
-    opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(4px);
   }
   to {
-    opacity: 1;
     transform: translateY(0);
   }
 }

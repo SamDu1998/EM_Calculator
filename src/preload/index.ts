@@ -25,6 +25,24 @@ const emApi: EmApi = {
     ipcRenderer.on('app:set-language', listener)
     return () => ipcRenderer.removeListener('app:set-language', listener)
   },
+
+  windowMinimize: (): void => {
+    ipcRenderer.send('window:minimize')
+  },
+
+  windowMaximize: (): void => {
+    ipcRenderer.send('window:maximize')
+  },
+
+  windowClose: (): void => {
+    ipcRenderer.send('window:close')
+  },
+
+  onWindowMaximized: (handler: (isMaximized: boolean) => void): (() => void) => {
+    const listener = (_event: IpcRendererEvent, isMaximized: boolean) => handler(isMaximized)
+    ipcRenderer.on('window:maximized', listener)
+    return () => ipcRenderer.removeListener('window:maximized', listener)
+  },
 }
 
 if (process.contextIsolated) {

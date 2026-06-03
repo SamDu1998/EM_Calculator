@@ -37,4 +37,8 @@ export interface EmApi {
     physicalAreaM2: number,
   ) => Promise<PythonReply<ApertureEfficiencyValue>>
   onSetLanguage: (handler: (lang: Language) => void) => () => void
+  windowMinimize: () => void
+  windowMaximize: () => void
+  windowClose: () => void
+  onWindowMaximized: (handler: (isMaximized: boolean) => void) => () => void
 }
