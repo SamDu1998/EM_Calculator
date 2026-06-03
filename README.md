@@ -1,14 +1,43 @@
 # EM Calculator
 
-Electron desktop application that calculates common electromagnetic engineering quantities — **relative bandwidth** and **aperture efficiency** — with bilingual UI (English / 中文) and a glassmorphism interface. Ships as a portable executable; no installer, no user data stored.
+Electron desktop application that calculates common electromagnetic engineering quantities — **relative bandwidth** and **aperture efficiency** — with bilingual UI (English / 中文) and a stunning **Apple Liquid Glass** inspired interface. Ships as a portable executable; no installer, no user data stored.
 
-## Features
+![EM Calculator Main Interface](docs/screenshots/main-interface.png)
 
+## ✨ Features
+
+### 🧮 Calculations
 - **Relative bandwidth**: enter `fmin` and `fmax` (with selectable Hz/kHz/MHz/GHz units); the app reports absolute bandwidth, center frequency, and the standard fractional bandwidth `(fmax − fmin) / fcenter`.
 - **Aperture efficiency**: enter frequency, antenna gain in dBi, and physical aperture area (m² or cm²); the app reports wavelength λ, effective aperture area Aₑ, and efficiency η, flagging over-unity inputs as physically inconsistent.
-- **Bilingual UI** — switch via the in-app `EN / 中` toggle or the OS menu. The active language persists across sessions.
-- **Python reference verification (dev only)** — each calculation tab exposes a "Verify with Python" button in development. The renderer spawns the Python implementation over IPC and reports the absolute delta against the in-process TypeScript result. Packaged builds drop Python entirely to keep the binary small.
-- **Accessibility** — full keyboard navigation, ARIA roles, `prefers-reduced-motion` and `prefers-reduced-transparency` fallbacks.
+
+### 🎨 Design (v0.2.0)
+- **Apple Liquid Glass UI** — Inspired by Apple's 2026 design language with real-time backdrop blur, dynamic transparency (65-75%), and enhanced color saturation
+- **Frameless Window** — Custom title bar with window controls (minimize, maximize/restore, close), draggable region, and double-click to maximize
+- **Dynamic Animated Background** — Flowing gradient blobs with smooth 20-25s animation cycles and subtle rotation effects
+- **Responsive Layout** — Fluid scaling from 720×540 to 1600×900 with CSS `clamp()` functions
+- **Microsoft YaHei Font** — Optimized for Chinese, Japanese, and Korean character rendering
+
+### 🌐 Bilingual UI
+Switch between English and 中文 via the in-app toggle or OS menu. The active language persists across sessions.
+
+### 🔬 Python Verification (Dev Only)
+Each calculation tab exposes a "Verify with Python" button in development mode. The renderer spawns the Python implementation over IPC and reports the absolute delta against the in-process TypeScript result. Packaged builds drop Python entirely to keep the binary small.
+
+### ♿ Accessibility
+Full keyboard navigation, ARIA roles, `prefers-reduced-motion` and `prefers-reduced-transparency` fallbacks.
+
+## 📸 Screenshots
+
+### Main Interface - Bandwidth Calculator
+![Bandwidth Calculator](docs/screenshots/bandwidth-calculator.png)
+
+### Aperture Efficiency Calculator
+![Aperture Efficiency](docs/screenshots/aperture-efficiency.png)
+
+### Liquid Glass Dynamic Background
+![Dynamic Background](docs/screenshots/dynamic-background.png)
+
+---
 
 ## Tech stack
 
@@ -36,6 +65,24 @@ python/
 build/
 └── afterPack.cjs         # Strips unused Chromium locales during packaging
 ```
+
+## 📥 Download & Installation
+
+### Latest Release: [v0.2.0](https://github.com/SamDu1998/EM_Calculator/releases/latest)
+
+| Platform | File | Size | Instructions |
+|----------|------|------|--------------|
+| **Windows** | `EM-Calculator-0.2.0-portable-x64.exe` | ~65 MB | Double-click to run. Self-extracts to `%TEMP%` and cleans up on close. |
+| **Windows** | `EM-Calculator-0.2.0-x64.zip` | ~98 MB | Extract and run `EM Calculator.exe` |
+| **Linux** | `EM-Calculator-0.2.0-x64.tar.gz` | ~90 MB | Extract and run `./EM-Calculator` |
+
+**No installation required!** The portable `.exe` uses LZMA compression for the smallest single-file footprint. A custom `afterPack` hook strips ~40 MB of unused Chromium locale files (keeping only `en-*` and `zh-*`).
+
+**No user data is stored.** Calculations are stateless — closing the app leaves nothing behind besides the OS-managed Chromium cache.
+
+---
+
+## 🛠️ Development
 
 ## Getting started
 
@@ -83,13 +130,16 @@ Aperture efficiency follows `η = Aₑ / Aphys` where `Aₑ = (λ² / 4π) · 10
 
 When the computed efficiency exceeds 100% the UI surfaces a warning, since this implies the supplied gain or physical area is physically inconsistent rather than the calculator being wrong.
 
-## Roadmap
+## 🚀 Roadmap
 
-- **Linux AppImage** packaging via Docker or a Linux/WSL host (Windows host currently falls back to `tar.gz`).
-- GitHub Actions CI matrix to publish releases.
-- Playwright E2E tests for tab switch, language switch, and Python verification.
-- The `More` tab is reserved for additional calculators (candidates: Friis path loss, antenna radiation pattern, impedance matching).
+- [x] **Apple Liquid Glass Design** — Completed in v0.2.0
+- [x] **Frameless Window** — Completed in v0.2.0
+- [x] **Responsive Layout** — Completed in v0.2.0
+- [x] **GitHub Actions CI/CD** — Automated release pipeline
+- [ ] **Linux AppImage** packaging via Docker or Linux host
+- [ ] Playwright E2E tests for tab switch, language switch, and Python verification
+- [ ] Additional calculators in the "More" tab (Friis path loss, antenna radiation pattern, impedance matching)
 
-## License
+## 📄 License
 
 MIT
