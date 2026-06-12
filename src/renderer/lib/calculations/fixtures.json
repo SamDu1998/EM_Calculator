@@ -252,6 +252,82 @@
       }
     }
   ],
+  "cpw": [
+    {
+      "name": "alumina_classic",
+      "widthM": 0.0005,
+      "gapM": 0.00025,
+      "heightM": 0.000635,
+      "er": 9.8,
+      "expected": {
+        "z0Ohm": 53.94037410718587,
+        "epsilonEff": 4.996122223786303,
+        "phaseVelocityMPerS": 134123283.14172795
+      }
+    },
+    {
+      "name": "GaAs_MMIC_50_30um",
+      "widthM": 0.00005,
+      "gapM": 0.00003,
+      "heightM": 0.0005,
+      "er": 12.9,
+      "expected": {
+        "z0Ohm": 48.25065956715743,
+        "epsilonEff": 6.9375764009940255,
+        "phaseVelocityMPerS": 113819536.69913669
+      }
+    },
+    {
+      "name": "FR4_wide",
+      "widthM": 0.001,
+      "gapM": 0.0005,
+      "heightM": 0.0016,
+      "er": 4.4,
+      "expected": {
+        "z0Ohm": 74.83975854694468,
+        "epsilonEff": 2.595351635932589,
+        "phaseVelocityMPerS": 186089812.90905058
+      }
+    }
+  ],
+  "gcpw": [
+    {
+      "name": "RO4350B_style",
+      "widthM": 0.0011,
+      "gapM": 0.0002,
+      "heightM": 0.000508,
+      "er": 3.66,
+      "expected": {
+        "z0Ohm": 43.57955178206369,
+        "epsilonEff": 2.6279738422424774,
+        "phaseVelocityMPerS": 184931198.33918297
+      }
+    },
+    {
+      "name": "FR4_mid",
+      "widthM": 0.0008,
+      "gapM": 0.0003,
+      "heightM": 0.0016,
+      "er": 4.4,
+      "expected": {
+        "z0Ohm": 64.73170916123745,
+        "epsilonEff": 2.755104163667063,
+        "phaseVelocityMPerS": 180614116.64069828
+      }
+    },
+    {
+      "name": "alumina_same_as_cpw",
+      "widthM": 0.0005,
+      "gapM": 0.00025,
+      "heightM": 0.000635,
+      "er": 9.8,
+      "expected": {
+        "z0Ohm": 45.705413052662436,
+        "epsilonEff": 5.787360793738872,
+        "phaseVelocityMPerS": 124617898.72040173
+      }
+    }
+  ],
   "siw": [
     {
       "name": "X_band_RO4003C",

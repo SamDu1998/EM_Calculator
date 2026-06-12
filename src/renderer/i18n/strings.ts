@@ -57,12 +57,17 @@ export const strings = {
 
     'transmission.heading': 'Transmission line impedance',
     'transmission.description':
-      'Characteristic impedance Z₀, effective permittivity εeff, and phase velocity. Microstrip uses the Hammerstad–Jensen model; coaxial uses Z₀ = 60/√εᵣ · ln(D/d).',
+      'Characteristic impedance Z₀, effective permittivity εeff, and phase velocity. Microstrip uses Hammerstad–Jensen, CPW/GCPW use conformal mapping (Ghione–Naldi), coaxial uses Z₀ = 60/√εᵣ · ln(D/d).',
     'transmission.type': 'Line type',
     'transmission.type.microstrip': 'Microstrip',
+    'transmission.type.cpw': 'Coplanar waveguide (CPW)',
+    'transmission.type.gcpw': 'Grounded CPW (GCPW)',
     'transmission.type.coaxial': 'Coaxial',
     'transmission.microstrip.width': 'Trace width W',
     'transmission.microstrip.height': 'Substrate height h',
+    'transmission.coplanar.width': 'Center conductor width W',
+    'transmission.coplanar.gap': 'Gap S',
+    'transmission.coplanar.height': 'Substrate height h',
     'transmission.coaxial.inner': 'Inner conductor diameter d',
     'transmission.coaxial.outer': 'Outer conductor inner diameter D',
     'transmission.dielectric': 'Relative permittivity εᵣ',
@@ -72,6 +77,7 @@ export const strings = {
     'transmission.warning.range':
       'W/h is outside the validated range of the Hammerstad–Jensen model (0.01 – 100); results may be inaccurate.',
     'transmission.errors.width_not_positive': 'Trace width must be greater than zero.',
+    'transmission.errors.gap_not_positive': 'Gap must be greater than zero.',
     'transmission.errors.height_not_positive': 'Substrate height must be greater than zero.',
     'transmission.errors.inner_not_positive': 'Inner diameter must be greater than zero.',
     'transmission.errors.outer_not_greater_than_inner':
@@ -160,12 +166,17 @@ export const strings = {
 
     'transmission.heading': '传输线特性阻抗',
     'transmission.description':
-      '计算特性阻抗 Z₀、有效介电常数 εeff 和相速度。微带线采用 Hammerstad–Jensen 模型；同轴线采用 Z₀ = 60/√εᵣ · ln(D/d)。',
+      '计算特性阻抗 Z₀、有效介电常数 εeff 和相速度。微带线采用 Hammerstad–Jensen 模型，CPW/GCPW 采用保角变换（Ghione–Naldi），同轴线采用 Z₀ = 60/√εᵣ · ln(D/d)。',
     'transmission.type': '传输线类型',
     'transmission.type.microstrip': '微带线',
+    'transmission.type.cpw': '共面波导 (CPW)',
+    'transmission.type.gcpw': '接地共面波导 (GCPW)',
     'transmission.type.coaxial': '同轴线',
     'transmission.microstrip.width': '导带宽度 W',
     'transmission.microstrip.height': '基板厚度 h',
+    'transmission.coplanar.width': '中心导体宽度 W',
+    'transmission.coplanar.gap': '缝隙宽度 S',
+    'transmission.coplanar.height': '基板厚度 h',
     'transmission.coaxial.inner': '内导体直径 d',
     'transmission.coaxial.outer': '外导体内径 D',
     'transmission.dielectric': '相对介电常数 εᵣ',
@@ -175,6 +186,7 @@ export const strings = {
     'transmission.warning.range':
       'W/h 超出 Hammerstad–Jensen 模型的有效范围（0.01 – 100），结果可能不准确。',
     'transmission.errors.width_not_positive': '导带宽度必须大于 0。',
+    'transmission.errors.gap_not_positive': '缝隙宽度必须大于 0。',
     'transmission.errors.height_not_positive': '基板厚度必须大于 0。',
     'transmission.errors.inner_not_positive': '内导体直径必须大于 0。',
     'transmission.errors.outer_not_greater_than_inner': '外导体内径必须大于内导体直径。',

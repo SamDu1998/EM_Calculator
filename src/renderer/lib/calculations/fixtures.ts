@@ -85,12 +85,27 @@ export interface SiwFixture {
   }
 }
 
+export interface CoplanarFixture {
+  name: string
+  widthM: number
+  gapM: number
+  heightM: number
+  er: number
+  expected: {
+    z0Ohm: number
+    epsilonEff: number
+    phaseVelocityMPerS: number
+  }
+}
+
 export interface Fixtures {
   bandwidth: BandwidthFixture[]
   apertureEfficiency: ApertureEfficiencyFixture[]
   wavelength: WavelengthFixture[]
   microstrip: MicrostripFixture[]
   coaxial: CoaxialFixture[]
+  cpw: CoplanarFixture[]
+  gcpw: CoplanarFixture[]
   siw: SiwFixture[]
 }
 
