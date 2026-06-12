@@ -8,6 +8,7 @@ export const strings = {
     'tabs.efficiency': 'Aperture Efficiency',
     'tabs.wavelength': 'Wavelength',
     'tabs.transmission': 'Line Impedance',
+    'tabs.siw': 'SIW Vias',
     'tabs.tbd': 'More',
 
     'lang.menu': 'Language',
@@ -77,6 +78,24 @@ export const strings = {
       'Outer diameter must be larger than the inner diameter.',
     'transmission.errors.er_less_than_one': 'Relative permittivity must be ≥ 1.',
 
+    'siw.heading': 'SIW via design',
+    'siw.description':
+      'Via rules per Deslandes & Wu: d ≈ λd/10, p = 1.5·d, equivalent width aeff = a − d²/(0.95·p), and TE₁₀ cutoff fc = c/(2·aeff·√εᵣ).',
+    'siw.frequency': 'Operating frequency',
+    'siw.dielectric': 'Relative permittivity εᵣ',
+    'siw.width': 'Via center-to-center width a',
+    'siw.result.diameter': 'Recommended via diameter d',
+    'siw.result.pitch': 'Recommended via pitch p',
+    'siw.result.effective_width': 'Equivalent width aeff',
+    'siw.result.cutoff': 'Cutoff frequency fc',
+    'siw.warning.below_cutoff':
+      'The operating frequency is at or below the TE₁₀ cutoff — the wave will not propagate. Increase the width a.',
+    'siw.errors.frequency_not_positive': 'Frequency must be greater than zero.',
+    'siw.errors.er_less_than_one': 'Relative permittivity must be ≥ 1.',
+    'siw.errors.width_not_positive': 'Width must be greater than zero.',
+    'siw.errors.width_too_small_for_vias':
+      'Width is too small for the recommended via size at this frequency.',
+
     'tbd.placeholder': 'More calculations are on the way.',
 
     'verify.button': 'Verify with Python',
@@ -95,6 +114,7 @@ export const strings = {
     'tabs.efficiency': '口径效率',
     'tabs.wavelength': '波长',
     'tabs.transmission': '线路阻抗',
+    'tabs.siw': 'SIW 通孔',
     'tabs.tbd': '更多',
 
     'lang.menu': '语言',
@@ -159,6 +179,22 @@ export const strings = {
     'transmission.errors.inner_not_positive': '内导体直径必须大于 0。',
     'transmission.errors.outer_not_greater_than_inner': '外导体内径必须大于内导体直径。',
     'transmission.errors.er_less_than_one': '相对介电常数必须 ≥ 1。',
+
+    'siw.heading': 'SIW 通孔设计',
+    'siw.description':
+      '按 Deslandes & Wu 设计规则：d ≈ λd/10，p = 1.5·d，等效宽度 aeff = a − d²/(0.95·p)，TE₁₀ 截止频率 fc = c/(2·aeff·√εᵣ)。',
+    'siw.frequency': '工作频率',
+    'siw.dielectric': '相对介电常数 εᵣ',
+    'siw.width': '通孔中心间波导宽度 a',
+    'siw.result.diameter': '推荐通孔直径 d',
+    'siw.result.pitch': '推荐通孔间距 p',
+    'siw.result.effective_width': '等效宽度 aeff',
+    'siw.result.cutoff': '截止频率 fc',
+    'siw.warning.below_cutoff': '工作频率不高于 TE₁₀ 截止频率，波无法传播，请增大宽度 a。',
+    'siw.errors.frequency_not_positive': '频率必须大于 0。',
+    'siw.errors.er_less_than_one': '相对介电常数必须 ≥ 1。',
+    'siw.errors.width_not_positive': '宽度必须大于 0。',
+    'siw.errors.width_too_small_for_vias': '该频率下推荐通孔尺寸过大，宽度 a 不足。',
 
     'tbd.placeholder': '更多计算功能即将推出。',
 

@@ -251,5 +251,59 @@
         "phaseVelocityMPerS": 250699047.66288632
       }
     }
+  ],
+  "siw": [
+    {
+      "name": "X_band_RO4003C",
+      "frequencyHz": 10000000000.0,
+      "er": 3.38,
+      "widthM": 0.013,
+      "expected": {
+        "viaDiameterM": 0.001630656000002948,
+        "viaPitchM": 0.002445984000004422,
+        "effectiveWidthM": 0.01185567999999793,
+        "cutoffFrequencyHz": 6877108693.905506,
+        "belowCutoff": false
+      }
+    },
+    {
+      "name": "Ka_band_RO5880_style",
+      "frequencyHz": 28000000000.0,
+      "er": 2.2,
+      "widthM": 0.0056,
+      "expected": {
+        "viaDiameterM": 0.0007218572641111331,
+        "viaPitchM": 0.0010827858961666996,
+        "effectiveWidthM": 0.00509343349886938,
+        "cutoffFrequencyHz": 19841236171.62991,
+        "belowCutoff": false
+      }
+    },
+    {
+      "name": "C_band_FR4",
+      "frequencyHz": 6000000000.0,
+      "er": 4.4,
+      "widthM": 0.018,
+      "expected": {
+        "viaDiameterM": 0.0023820074436748375,
+        "viaPitchM": 0.0035730111655122563,
+        "effectiveWidthM": 0.016328415829000114,
+        "cutoffFrequencyHz": 4376433333.068849,
+        "belowCutoff": false
+      }
+    },
+    {
+      "name": "below_cutoff_narrow_guide",
+      "frequencyHz": 10000000000.0,
+      "er": 2.2,
+      "widthM": 0.005,
+      "expected": {
+        "viaDiameterM": 0.0020212003395111726,
+        "viaPitchM": 0.003031800509266759,
+        "effectiveWidthM": 0.0035816137968342652,
+        "cutoffFrequencyHz": 28216335626.38274,
+        "belowCutoff": true
+      }
+    }
   ]
 }

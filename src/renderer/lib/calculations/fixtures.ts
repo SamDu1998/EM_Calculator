@@ -71,12 +71,27 @@ export interface CoaxialFixture {
   }
 }
 
+export interface SiwFixture {
+  name: string
+  frequencyHz: number
+  er: number
+  widthM: number
+  expected: {
+    viaDiameterM: number
+    viaPitchM: number
+    effectiveWidthM: number
+    cutoffFrequencyHz: number
+    belowCutoff: boolean
+  }
+}
+
 export interface Fixtures {
   bandwidth: BandwidthFixture[]
   apertureEfficiency: ApertureEfficiencyFixture[]
   wavelength: WavelengthFixture[]
   microstrip: MicrostripFixture[]
   coaxial: CoaxialFixture[]
+  siw: SiwFixture[]
 }
 
 export const fixtures = fixturesJson as Fixtures
