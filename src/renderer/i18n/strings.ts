@@ -2,7 +2,7 @@ export const strings = {
   en: {
     'app.title': 'EM Calculator',
     'app.subtitle': 'Electromagnetic engineering quantities',
-    'app.author': 'Author: Sam · Version 0.2',
+    'app.author': 'Author: Sam · Version 0.3',
 
     'tabs.bandwidth': 'Relative Bandwidth',
     'tabs.efficiency': 'Aperture Efficiency',
@@ -114,7 +114,7 @@ export const strings = {
   zh: {
     'app.title': '电磁计算器',
     'app.subtitle': '电磁工程量计算',
-    'app.author': '作者：Sam · 版本 0.2',
+    'app.author': '作者：Sam · 版本 0.3',
 
     'tabs.bandwidth': '相对带宽',
     'tabs.efficiency': '口径效率',

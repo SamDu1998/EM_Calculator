@@ -1,6 +1,6 @@
 # EM Calculator
 
-Electron desktop application that calculates common electromagnetic engineering quantities — **relative bandwidth** and **aperture efficiency** — with bilingual UI (English / 中文) and a stunning **Apple Liquid Glass** inspired interface. Ships as a portable executable; no installer, no user data stored.
+Electron desktop application that calculates common electromagnetic engineering quantities — **relative bandwidth**, **aperture efficiency**, **wavelength**, **transmission line impedance** (microstrip / CPW / GCPW / coaxial), and **SIW via design** — with bilingual UI (English / 中文) and a stunning **Apple Liquid Glass** inspired interface. Ships as a portable executable; no installer, no user data stored.
 
 ![EM Calculator Main Interface](docs/screenshots/main-interface.png)
 
@@ -9,6 +9,9 @@ Electron desktop application that calculates common electromagnetic engineering 
 ### 🧮 Calculations
 - **Relative bandwidth**: enter `fmin` and `fmax` (with selectable Hz/kHz/MHz/GHz units); the app reports absolute bandwidth, center frequency, and the standard fractional bandwidth `(fmax − fmin) / fcenter`.
 - **Aperture efficiency**: enter frequency, antenna gain in dBi, and physical aperture area (m² or cm²); the app reports wavelength λ, effective aperture area Aₑ, and efficiency η, flagging over-unity inputs as physically inconsistent.
+- **Wavelength** *(new in v0.3.0)*: enter frequency and relative permittivity εᵣ; the app reports free-space wavelength λ₀, guided wavelength λg = λ₀/√εᵣ (TEM), λg/2, λg/4, and phase velocity.
+- **Transmission line impedance** *(new in v0.3.0)*: characteristic impedance Z₀, effective permittivity εeff, and phase velocity for four line types — **microstrip** (Hammerstad–Jensen), **CPW** and **GCPW** (Ghione–Naldi conformal mapping with an AGM-based elliptic integral), and **coaxial** (`Z₀ = 60/√εᵣ · ln(D/d)`). Lengths accept mm / µm / mil.
+- **SIW via design** *(new in v0.3.0)*: enter operating frequency, εᵣ, and via center-to-center width `a`; the app recommends via diameter `d ≈ λd/10` and pitch `p = 1.5·d` (Deslandes & Wu rules), and reports the equivalent width `aeff = a − d²/(0.95·p)` and TE₁₀ cutoff frequency, warning when the design is below cutoff.
 
 ### 🎨 Design (v0.2.0)
 - **Apple Liquid Glass UI** — Inspired by Apple's 2026 design language with real-time backdrop blur, dynamic transparency (65-75%), and enhanced color saturation
@@ -34,6 +37,15 @@ Full keyboard navigation, ARIA roles, `prefers-reduced-motion` and `prefers-redu
 ### Aperture Efficiency Calculator
 ![Aperture Efficiency](docs/screenshots/aperture-efficiency.png)
 
+### Wavelength Calculator (v0.3.0)
+![Wavelength Calculator](docs/screenshots/wavelength-calculator.png)
+
+### Transmission Line Impedance (v0.3.0)
+![Transmission Line Calculator](docs/screenshots/transmission-line-calculator.png)
+
+### SIW Via Design (v0.3.0)
+![SIW Calculator](docs/screenshots/siw-calculator.png)
+
 ### Liquid Glass Dynamic Background
 ![Dynamic Background](docs/screenshots/dynamic-background.png)
 
@@ -55,7 +67,7 @@ src/
 ├── shared/               # IPC payload types shared between preload and renderer
 └── renderer/             # React UI
     ├── components/       # Reusable UI parts (Tabs, GlassCard, NumberInput, ...)
-    ├── features/         # bandwidth/, aperture-efficiency/, tbd/
+    ├── features/         # bandwidth/, aperture-efficiency/, wavelength/, transmission-line/, siw/, tbd/
     ├── lib/              # Pure calculation functions, formatting, unit conversion
     ├── i18n/             # Custom Context-based translation provider
     └── styles/           # Design tokens + glass system
@@ -130,12 +142,22 @@ Aperture efficiency follows `η = Aₑ / Aphys` where `Aₑ = (λ² / 4π) · 10
 
 When the computed efficiency exceeds 100% the UI surfaces a warning, since this implies the supplied gain or physical area is physically inconsistent rather than the calculator being wrong.
 
+### v0.3.0 calculator models
+
+- **Wavelength**: `λ₀ = c/f`, `λg = λ₀/√εᵣ` for a TEM wave in a uniform dielectric, phase velocity `vₚ = c/√εᵣ`.
+- **Microstrip**: Hammerstad–Jensen closed-form model (1980), zero conductor thickness. The UI warns when `W/h` leaves the validated `0.01 – 100` range. Verified against the classic 50 Ω FR4 design (`W = 3.06 mm, h = 1.6 mm, εᵣ = 4.4`) and the textbook 126.5 Ω air line at `W/h = 1`.
+- **CPW / GCPW**: conformal-mapping formulas (Ghione–Naldi 1987 / Simons) using the complete elliptic integral of the first kind, computed with the AGM iteration to ~1e-15. The implementation reproduces the analytic thick-substrate limit `εeff → (εᵣ+1)/2` exactly.
+- **Coaxial**: TEM `Z₀ = 60/√εᵣ · ln(D/d)`, verified against RG-405 (50 Ω) and RG-6-class (75 Ω) cable geometries.
+- **SIW**: Deslandes & Wu (2001) — `aeff = a − d²/(0.95·p)`, `fc = c/(2·aeff·√εᵣ)`, with the conservative via rules `d ≈ λd/10`, `p = 1.5·d` (inside the typical `1.5d – 2d` window).
+
 ## 🚀 Roadmap
 
 - [x] **Apple Liquid Glass Design** — Completed in v0.2.0
 - [x] **Frameless Window** — Completed in v0.2.0
 - [x] **Responsive Layout** — Completed in v0.2.0
 - [x] **GitHub Actions CI/CD** — Automated release pipeline
+- [x] **Wavelength, transmission line, and SIW calculators** — Completed in v0.3.0
+- [ ] SVG cross-section visualizations for the transmission line and SIW tabs
 - [ ] **Linux AppImage** packaging via Docker or Linux host
 - [ ] Playwright E2E tests for tab switch, language switch, and Python verification
 - [ ] Additional calculators in the "More" tab (Friis path loss, antenna radiation pattern, impedance matching)
