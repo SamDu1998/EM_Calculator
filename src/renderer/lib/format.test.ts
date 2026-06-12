@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatCompact, formatHz, formatNumber, formatPercent } from './format'
+import { formatCompact, formatHz, formatMeters, formatNumber, formatPercent } from './format'
 
 describe('formatPercent', () => {
   it('formats with default 3 digits', () => {
@@ -45,6 +45,28 @@ describe('formatCompact', () => {
 
   it('returns em-dash for non-finite', () => {
     expect(formatCompact(Number.POSITIVE_INFINITY)).toBe('—')
+  })
+})
+
+describe('formatMeters', () => {
+  it('uses meters at scale', () => {
+    expect(formatMeters(33.51781576148753)).toBe('33.5178 m')
+  })
+
+  it('uses centimeters below one meter', () => {
+    expect(formatMeters(0.12491352416666666)).toBe('12.4914 cm')
+  })
+
+  it('uses millimeters below one centimeter', () => {
+    expect(formatMeters(0.0035730111655122554)).toBe('3.5730 mm')
+  })
+
+  it('uses micrometers below one millimeter', () => {
+    expect(formatMeters(0.00005)).toBe('50.0000 µm')
+  })
+
+  it('returns em-dash for non-finite', () => {
+    expect(formatMeters(Number.NaN)).toBe('—')
   })
 })
 

@@ -36,6 +36,15 @@ export function formatCompact(value: number): string {
   return COMPACT_FORMAT.format(value)
 }
 
+export function formatMeters(meters: number): string {
+  if (!Number.isFinite(meters)) return '—'
+  const abs = Math.abs(meters)
+  if (abs >= 1) return `${meters.toFixed(4)} m`
+  if (abs >= 1e-2) return `${(meters * 1e2).toFixed(4)} cm`
+  if (abs >= 1e-3) return `${(meters * 1e3).toFixed(4)} mm`
+  return `${(meters * 1e6).toFixed(4)} µm`
+}
+
 export function formatHz(hz: number): string {
   if (!Number.isFinite(hz)) return '—'
   const abs = Math.abs(hz)

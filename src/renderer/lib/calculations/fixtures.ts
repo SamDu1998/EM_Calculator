@@ -33,9 +33,23 @@ export interface ApertureEfficiencyFixture {
   }
 }
 
+export interface WavelengthFixture {
+  name: string
+  frequencyHz: number
+  er: number
+  expected: {
+    lambda0M: number
+    lambdaGM: number
+    halfLambdaGM: number
+    quarterLambdaGM: number
+    phaseVelocityMPerS: number
+  }
+}
+
 export interface Fixtures {
   bandwidth: BandwidthFixture[]
   apertureEfficiency: ApertureEfficiencyFixture[]
+  wavelength: WavelengthFixture[]
 }
 
 export const fixtures = fixturesJson as Fixtures

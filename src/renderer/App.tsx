@@ -7,9 +7,10 @@ import { Tabs } from './components/Tabs'
 import { ApertureEfficiencyTab } from './features/aperture-efficiency/ApertureEfficiencyTab'
 import { BandwidthTab } from './features/bandwidth/BandwidthTab'
 import { TbdTab } from './features/tbd/TbdTab'
+import { WavelengthTab } from './features/wavelength/WavelengthTab'
 import { useTranslation } from './i18n/useTranslation'
 
-export type TabId = 'bandwidth' | 'efficiency' | 'tbd'
+export type TabId = 'bandwidth' | 'efficiency' | 'wavelength' | 'tbd'
 
 export function App(): JSX.Element {
   const { t } = useTranslation()
@@ -18,6 +19,7 @@ export function App(): JSX.Element {
   const tabs = [
     { id: 'bandwidth' as const, label: t('tabs.bandwidth') },
     { id: 'efficiency' as const, label: t('tabs.efficiency') },
+    { id: 'wavelength' as const, label: t('tabs.wavelength') },
     { id: 'tbd' as const, label: t('tabs.tbd') },
   ]
 
@@ -31,6 +33,7 @@ export function App(): JSX.Element {
         <main className="app-main">
           {activeTab === 'bandwidth' && <BandwidthTab />}
           {activeTab === 'efficiency' && <ApertureEfficiencyTab />}
+          {activeTab === 'wavelength' && <WavelengthTab />}
           {activeTab === 'tbd' && <TbdTab />}
         </main>
       </AppShell>

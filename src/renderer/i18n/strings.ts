@@ -6,6 +6,7 @@ export const strings = {
 
     'tabs.bandwidth': 'Relative Bandwidth',
     'tabs.efficiency': 'Aperture Efficiency',
+    'tabs.wavelength': 'Wavelength',
     'tabs.tbd': 'More',
 
     'lang.menu': 'Language',
@@ -39,6 +40,19 @@ export const strings = {
     'efficiency.errors.area_not_positive': 'Physical aperture area must be greater than zero.',
     'efficiency.errors.gain_not_finite': 'Gain must be a finite number.',
 
+    'wavelength.heading': 'Wavelength',
+    'wavelength.description':
+      'λ₀ = c/f and λg = λ₀/√εᵣ for a TEM wave in a uniform dielectric, with λg/2, λg/4, and phase velocity.',
+    'wavelength.frequency': 'Frequency',
+    'wavelength.dielectric': 'Relative permittivity εᵣ',
+    'wavelength.result.lambda0': 'Free-space wavelength λ₀',
+    'wavelength.result.lambdag': 'Guided wavelength λg',
+    'wavelength.result.half': 'Half wavelength λg/2',
+    'wavelength.result.quarter': 'Quarter wavelength λg/4',
+    'wavelength.result.phase_velocity': 'Phase velocity vₚ',
+    'wavelength.errors.frequency_not_positive': 'Frequency must be greater than zero.',
+    'wavelength.errors.er_less_than_one': 'Relative permittivity must be ≥ 1.',
+
     'tbd.placeholder': 'More calculations are on the way.',
 
     'verify.button': 'Verify with Python',
@@ -55,6 +69,7 @@ export const strings = {
 
     'tabs.bandwidth': '相对带宽',
     'tabs.efficiency': '口径效率',
+    'tabs.wavelength': '波长',
     'tabs.tbd': '更多',
 
     'lang.menu': '语言',
@@ -84,6 +99,19 @@ export const strings = {
     'efficiency.errors.frequency_not_positive': '频率必须大于 0。',
     'efficiency.errors.area_not_positive': '口径面积必须大于 0。',
     'efficiency.errors.gain_not_finite': '增益必须为有限数值。',
+
+    'wavelength.heading': '波长计算',
+    'wavelength.description':
+      'λ₀ = c/f，均匀介质中 TEM 波 λg = λ₀/√εᵣ，并给出 λg/2、λg/4 和相速度。',
+    'wavelength.frequency': '频率',
+    'wavelength.dielectric': '相对介电常数 εᵣ',
+    'wavelength.result.lambda0': '自由空间波长 λ₀',
+    'wavelength.result.lambdag': '介质内波长 λg',
+    'wavelength.result.half': '半波长 λg/2',
+    'wavelength.result.quarter': '四分之一波长 λg/4',
+    'wavelength.result.phase_velocity': '相速度 vₚ',
+    'wavelength.errors.frequency_not_positive': '频率必须大于 0。',
+    'wavelength.errors.er_less_than_one': '相对介电常数必须 ≥ 1。',
 
     'tbd.placeholder': '更多计算功能即将推出。',
 

@@ -105,5 +105,55 @@
         "exceedsPhysicalLimit": true
       }
     }
+  ],
+  "wavelength": [
+    {
+      "name": "ISM_2_4GHz_free_space",
+      "frequencyHz": 2400000000.0,
+      "er": 1.0,
+      "expected": {
+        "lambda0M": 0.12491352416666666,
+        "lambdaGM": 0.12491352416666666,
+        "halfLambdaGM": 0.06245676208333333,
+        "quarterLambdaGM": 0.031228381041666666,
+        "phaseVelocityMPerS": 299792458.0
+      }
+    },
+    {
+      "name": "X_band_10GHz_FR4",
+      "frequencyHz": 10000000000.0,
+      "er": 4.4,
+      "expected": {
+        "lambda0M": 0.0299792458,
+        "lambdaGM": 0.014292044662049022,
+        "halfLambdaGM": 0.007146022331024511,
+        "quarterLambdaGM": 0.0035730111655122554,
+        "phaseVelocityMPerS": 142920446.62049022
+      }
+    },
+    {
+      "name": "mmWave_28GHz_RO4003C",
+      "frequencyHz": 28000000000.0,
+      "er": 2.2,
+      "expected": {
+        "lambda0M": 0.0107068735,
+        "lambdaGM": 0.007218572641111331,
+        "halfLambdaGM": 0.0036092863205556655,
+        "quarterLambdaGM": 0.0018046431602778328,
+        "phaseVelocityMPerS": 202120033.95111728
+      }
+    },
+    {
+      "name": "MF_1MHz_water",
+      "frequencyHz": 1000000.0,
+      "er": 80.0,
+      "expected": {
+        "lambda0M": 299.792458,
+        "lambdaGM": 33.51781576148753,
+        "halfLambdaGM": 16.758907880743767,
+        "quarterLambdaGM": 8.379453940371883,
+        "phaseVelocityMPerS": 33517815.761487532
+      }
+    }
   ]
 }
