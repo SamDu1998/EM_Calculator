@@ -73,7 +73,25 @@ test('Take application screenshots', async () => {
     }
   }
 
-  // Screenshot 4: Dynamic background - switch back to first tab for variety
+  // Screenshots 4-6: the v0.3.0 calculators render valid results from their defaults
+  const newTabShots: Array<{ index: number; file: string }> = [
+    { index: 2, file: 'wavelength-calculator.png' },
+    { index: 3, file: 'transmission-line-calculator.png' },
+    { index: 4, file: 'siw-calculator.png' },
+  ]
+  for (const shot of newTabShots) {
+    const tab = tabs[shot.index]
+    if (!tab) continue
+    await tab.click()
+    await window.waitForTimeout(800)
+    await window.screenshot({
+      path: path.join(__dirname, `../docs/screenshots/${shot.file}`),
+      fullPage: false,
+    })
+    console.log(`✓ Captured ${shot.file}`)
+  }
+
+  // Screenshot 7: Dynamic background - switch back to first tab for variety
   await tabs[0].click()
   await window.waitForTimeout(500)
 

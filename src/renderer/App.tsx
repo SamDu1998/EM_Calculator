@@ -6,10 +6,13 @@ import { GrainOverlay } from './components/backgrounds/GrainOverlay'
 import { Tabs } from './components/Tabs'
 import { ApertureEfficiencyTab } from './features/aperture-efficiency/ApertureEfficiencyTab'
 import { BandwidthTab } from './features/bandwidth/BandwidthTab'
+import { SiwTab } from './features/siw/SiwTab'
 import { TbdTab } from './features/tbd/TbdTab'
+import { TransmissionLineTab } from './features/transmission-line/TransmissionLineTab'
+import { WavelengthTab } from './features/wavelength/WavelengthTab'
 import { useTranslation } from './i18n/useTranslation'
 
-export type TabId = 'bandwidth' | 'efficiency' | 'tbd'
+export type TabId = 'bandwidth' | 'efficiency' | 'wavelength' | 'transmission' | 'siw' | 'tbd'
 
 export function App(): JSX.Element {
   const { t } = useTranslation()
@@ -18,6 +21,9 @@ export function App(): JSX.Element {
   const tabs = [
     { id: 'bandwidth' as const, label: t('tabs.bandwidth') },
     { id: 'efficiency' as const, label: t('tabs.efficiency') },
+    { id: 'wavelength' as const, label: t('tabs.wavelength') },
+    { id: 'transmission' as const, label: t('tabs.transmission') },
+    { id: 'siw' as const, label: t('tabs.siw') },
     { id: 'tbd' as const, label: t('tabs.tbd') },
   ]
 
@@ -31,6 +37,9 @@ export function App(): JSX.Element {
         <main className="app-main">
           {activeTab === 'bandwidth' && <BandwidthTab />}
           {activeTab === 'efficiency' && <ApertureEfficiencyTab />}
+          {activeTab === 'wavelength' && <WavelengthTab />}
+          {activeTab === 'transmission' && <TransmissionLineTab />}
+          {activeTab === 'siw' && <SiwTab />}
           {activeTab === 'tbd' && <TbdTab />}
         </main>
       </AppShell>

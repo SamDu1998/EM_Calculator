@@ -33,9 +33,80 @@ export interface ApertureEfficiencyFixture {
   }
 }
 
+export interface WavelengthFixture {
+  name: string
+  frequencyHz: number
+  er: number
+  expected: {
+    lambda0M: number
+    lambdaGM: number
+    halfLambdaGM: number
+    quarterLambdaGM: number
+    phaseVelocityMPerS: number
+  }
+}
+
+export interface MicrostripFixture {
+  name: string
+  widthM: number
+  heightM: number
+  er: number
+  expected: {
+    z0Ohm: number
+    epsilonEff: number
+    phaseVelocityMPerS: number
+    outsideValidatedRange: boolean
+  }
+}
+
+export interface CoaxialFixture {
+  name: string
+  innerDiameterM: number
+  outerDiameterM: number
+  er: number
+  expected: {
+    z0Ohm: number
+    epsilonEff: number
+    phaseVelocityMPerS: number
+  }
+}
+
+export interface SiwFixture {
+  name: string
+  frequencyHz: number
+  er: number
+  widthM: number
+  expected: {
+    viaDiameterM: number
+    viaPitchM: number
+    effectiveWidthM: number
+    cutoffFrequencyHz: number
+    belowCutoff: boolean
+  }
+}
+
+export interface CoplanarFixture {
+  name: string
+  widthM: number
+  gapM: number
+  heightM: number
+  er: number
+  expected: {
+    z0Ohm: number
+    epsilonEff: number
+    phaseVelocityMPerS: number
+  }
+}
+
 export interface Fixtures {
   bandwidth: BandwidthFixture[]
   apertureEfficiency: ApertureEfficiencyFixture[]
+  wavelength: WavelengthFixture[]
+  microstrip: MicrostripFixture[]
+  coaxial: CoaxialFixture[]
+  cpw: CoplanarFixture[]
+  gcpw: CoplanarFixture[]
+  siw: SiwFixture[]
 }
 
 export const fixtures = fixturesJson as Fixtures

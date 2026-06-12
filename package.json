@@ -1,7 +1,7 @@
 {
   "name": "em-calculator",
-  "version": "0.2.0",
-  "description": "Electron desktop calculator for electromagnetic engineering quantities (relative bandwidth, aperture efficiency).",
+  "version": "0.3.0",
+  "description": "Electron desktop calculator for electromagnetic engineering quantities (relative bandwidth, aperture efficiency, wavelength, transmission line impedance, SIW via design).",
   "main": "./out/main/index.js",
   "type": "module",
   "author": "Sam",
