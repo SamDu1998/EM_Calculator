@@ -46,10 +46,37 @@ export interface WavelengthFixture {
   }
 }
 
+export interface MicrostripFixture {
+  name: string
+  widthM: number
+  heightM: number
+  er: number
+  expected: {
+    z0Ohm: number
+    epsilonEff: number
+    phaseVelocityMPerS: number
+    outsideValidatedRange: boolean
+  }
+}
+
+export interface CoaxialFixture {
+  name: string
+  innerDiameterM: number
+  outerDiameterM: number
+  er: number
+  expected: {
+    z0Ohm: number
+    epsilonEff: number
+    phaseVelocityMPerS: number
+  }
+}
+
 export interface Fixtures {
   bandwidth: BandwidthFixture[]
   apertureEfficiency: ApertureEfficiencyFixture[]
   wavelength: WavelengthFixture[]
+  microstrip: MicrostripFixture[]
+  coaxial: CoaxialFixture[]
 }
 
 export const fixtures = fixturesJson as Fixtures

@@ -7,6 +7,7 @@ export const strings = {
     'tabs.bandwidth': 'Relative Bandwidth',
     'tabs.efficiency': 'Aperture Efficiency',
     'tabs.wavelength': 'Wavelength',
+    'tabs.transmission': 'Line Impedance',
     'tabs.tbd': 'More',
 
     'lang.menu': 'Language',
@@ -53,6 +54,29 @@ export const strings = {
     'wavelength.errors.frequency_not_positive': 'Frequency must be greater than zero.',
     'wavelength.errors.er_less_than_one': 'Relative permittivity must be ≥ 1.',
 
+    'transmission.heading': 'Transmission line impedance',
+    'transmission.description':
+      'Characteristic impedance Z₀, effective permittivity εeff, and phase velocity. Microstrip uses the Hammerstad–Jensen model; coaxial uses Z₀ = 60/√εᵣ · ln(D/d).',
+    'transmission.type': 'Line type',
+    'transmission.type.microstrip': 'Microstrip',
+    'transmission.type.coaxial': 'Coaxial',
+    'transmission.microstrip.width': 'Trace width W',
+    'transmission.microstrip.height': 'Substrate height h',
+    'transmission.coaxial.inner': 'Inner conductor diameter d',
+    'transmission.coaxial.outer': 'Outer conductor inner diameter D',
+    'transmission.dielectric': 'Relative permittivity εᵣ',
+    'transmission.result.z0': 'Characteristic impedance Z₀',
+    'transmission.result.eeff': 'Effective permittivity εeff',
+    'transmission.result.vp': 'Phase velocity vₚ',
+    'transmission.warning.range':
+      'W/h is outside the validated range of the Hammerstad–Jensen model (0.01 – 100); results may be inaccurate.',
+    'transmission.errors.width_not_positive': 'Trace width must be greater than zero.',
+    'transmission.errors.height_not_positive': 'Substrate height must be greater than zero.',
+    'transmission.errors.inner_not_positive': 'Inner diameter must be greater than zero.',
+    'transmission.errors.outer_not_greater_than_inner':
+      'Outer diameter must be larger than the inner diameter.',
+    'transmission.errors.er_less_than_one': 'Relative permittivity must be ≥ 1.',
+
     'tbd.placeholder': 'More calculations are on the way.',
 
     'verify.button': 'Verify with Python',
@@ -70,6 +94,7 @@ export const strings = {
     'tabs.bandwidth': '相对带宽',
     'tabs.efficiency': '口径效率',
     'tabs.wavelength': '波长',
+    'tabs.transmission': '线路阻抗',
     'tabs.tbd': '更多',
 
     'lang.menu': '语言',
@@ -112,6 +137,28 @@ export const strings = {
     'wavelength.result.phase_velocity': '相速度 vₚ',
     'wavelength.errors.frequency_not_positive': '频率必须大于 0。',
     'wavelength.errors.er_less_than_one': '相对介电常数必须 ≥ 1。',
+
+    'transmission.heading': '传输线特性阻抗',
+    'transmission.description':
+      '计算特性阻抗 Z₀、有效介电常数 εeff 和相速度。微带线采用 Hammerstad–Jensen 模型；同轴线采用 Z₀ = 60/√εᵣ · ln(D/d)。',
+    'transmission.type': '传输线类型',
+    'transmission.type.microstrip': '微带线',
+    'transmission.type.coaxial': '同轴线',
+    'transmission.microstrip.width': '导带宽度 W',
+    'transmission.microstrip.height': '基板厚度 h',
+    'transmission.coaxial.inner': '内导体直径 d',
+    'transmission.coaxial.outer': '外导体内径 D',
+    'transmission.dielectric': '相对介电常数 εᵣ',
+    'transmission.result.z0': '特性阻抗 Z₀',
+    'transmission.result.eeff': '有效介电常数 εeff',
+    'transmission.result.vp': '相速度 vₚ',
+    'transmission.warning.range':
+      'W/h 超出 Hammerstad–Jensen 模型的有效范围（0.01 – 100），结果可能不准确。',
+    'transmission.errors.width_not_positive': '导带宽度必须大于 0。',
+    'transmission.errors.height_not_positive': '基板厚度必须大于 0。',
+    'transmission.errors.inner_not_positive': '内导体直径必须大于 0。',
+    'transmission.errors.outer_not_greater_than_inner': '外导体内径必须大于内导体直径。',
+    'transmission.errors.er_less_than_one': '相对介电常数必须 ≥ 1。',
 
     'tbd.placeholder': '更多计算功能即将推出。',
 

@@ -2,9 +2,11 @@ import { describe, expect, it } from 'vitest'
 import {
   AREA_UNITS,
   FREQUENCY_UNITS,
+  LENGTH_UNITS,
   SPEED_OF_LIGHT_M_PER_S,
   fromHz,
   toHz,
+  toMeters,
   toMetersSquared,
 } from './units'
 
@@ -47,5 +49,15 @@ describe('units', () => {
   describe('toMetersSquared', () => {
     it('handles m2', () => expect(toMetersSquared(2.5, 'm2')).toBe(2.5))
     it('handles cm2', () => expect(toMetersSquared(10000, 'cm2')).toBeCloseTo(1, 12))
+  })
+
+  it('lists all length units', () => {
+    expect(LENGTH_UNITS).toEqual(['mm', 'um', 'mil'])
+  })
+
+  describe('toMeters', () => {
+    it('handles mm', () => expect(toMeters(1.6, 'mm')).toBeCloseTo(0.0016, 15))
+    it('handles um', () => expect(toMeters(508, 'um')).toBeCloseTo(0.000508, 15))
+    it('handles mil', () => expect(toMeters(20, 'mil')).toBeCloseTo(0.000508, 15))
   })
 })

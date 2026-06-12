@@ -155,5 +155,101 @@
         "phaseVelocityMPerS": 33517815.761487532
       }
     }
+  ],
+  "microstrip": [
+    {
+      "name": "FR4_50ohm_classic",
+      "widthM": 0.00306,
+      "heightM": 0.0016,
+      "er": 4.4,
+      "expected": {
+        "z0Ohm": 50.02069714159861,
+        "epsilonEff": 3.331086403344929,
+        "phaseVelocityMPerS": 164258462.73905373,
+        "outsideValidatedRange": false
+      }
+    },
+    {
+      "name": "air_square_u_equals_1",
+      "widthM": 0.001,
+      "heightM": 0.001,
+      "er": 1.0,
+      "expected": {
+        "z0Ohm": 126.4238652043899,
+        "epsilonEff": 1.0,
+        "phaseVelocityMPerS": 299792458.0,
+        "outsideValidatedRange": false
+      }
+    },
+    {
+      "name": "RO4003C_style_50ohm",
+      "widthM": 0.00113,
+      "heightM": 0.000508,
+      "er": 3.38,
+      "expected": {
+        "z0Ohm": 51.28110632877316,
+        "epsilonEff": 2.667164765056688,
+        "phaseVelocityMPerS": 183567494.50790662,
+        "outsideValidatedRange": false
+      }
+    },
+    {
+      "name": "wide_low_impedance",
+      "widthM": 0.01,
+      "heightM": 0.001,
+      "er": 2.2,
+      "expected": {
+        "z0Ohm": 20.439215534854707,
+        "epsilonEff": 2.015990046075876,
+        "phaseVelocityMPerS": 211142914.10092264,
+        "outsideValidatedRange": false
+      }
+    }
+  ],
+  "coaxial": [
+    {
+      "name": "PE_50ohm_ideal_ratio",
+      "innerDiameterM": 0.001,
+      "outerDiameterM": 0.0034903429574597903,
+      "er": 2.25,
+      "expected": {
+        "z0Ohm": 49.99999999997649,
+        "epsilonEff": 2.25,
+        "phaseVelocityMPerS": 199861638.66666666
+      }
+    },
+    {
+      "name": "air_75ohm_same_ratio",
+      "innerDiameterM": 0.001,
+      "outerDiameterM": 0.0034903429574597903,
+      "er": 1.0,
+      "expected": {
+        "z0Ohm": 74.99999999996473,
+        "epsilonEff": 1.0,
+        "phaseVelocityMPerS": 299792458.0
+      }
+    },
+    {
+      "name": "RG405_semi_rigid",
+      "innerDiameterM": 0.00051,
+      "outerDiameterM": 0.00168,
+      "er": 2.07,
+      "expected": {
+        "z0Ohm": 49.71560576654552,
+        "epsilonEff": 2.07,
+        "phaseVelocityMPerS": 208370162.395334
+      }
+    },
+    {
+      "name": "RG6_style_foam_PE",
+      "innerDiameterM": 0.001024,
+      "outerDiameterM": 0.0047,
+      "er": 1.43,
+      "expected": {
+        "z0Ohm": 76.45824162068661,
+        "epsilonEff": 1.43,
+        "phaseVelocityMPerS": 250699047.66288632
+      }
+    }
   ]
 }
