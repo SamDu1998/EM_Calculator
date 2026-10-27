@@ -35,3 +35,6 @@ desktop.ini
 # electron-builder output (build/ keeps installer assets; dist/ is the actual output)
 build/output/
 release/
+
+# WinUI local publication output
+winui/publish/

@@ -1,6 +1,16 @@
 # EM Calculator
 
-Electron desktop application that calculates common electromagnetic engineering quantities — **relative bandwidth**, **aperture efficiency**, **wavelength**, **transmission line impedance** (microstrip / CPW / GCPW / coaxial), and **SIW via design** — with bilingual UI (English / 中文) and a stunning **Apple Liquid Glass** inspired interface. Ships as a portable executable; no installer, no user data stored.
+EM Calculator is a bilingual desktop tool for **relative bandwidth**, **aperture efficiency**, **wavelength**, **transmission line impedance** (microstrip / CPW / GCPW / coaxial), and **SIW via design**.
+
+The current public release is the Electron-based **v0.3.0** for Windows and Linux. A separate **WinUI 3 prototype** is being developed for a native Windows interface; it is not yet a replacement for the released app.
+
+## Windows-native prototype
+
+The [WinUI project](winui/README.md) uses native Windows controls, Mica, a system title bar, and card-based input and result sections. It includes Chinese and English interfaces and ports the five calculator pages. It targets Windows 10 1809 or newer; Windows 11 provides the intended Mica appearance.
+
+**Status:** experimental. The C# calculation port still needs automated parity tests against the existing TypeScript fixtures, and the app needs further accessibility, language-persistence, deployment, and clean-machine testing. Do not rely on the prototype for production engineering calculations. Existing screenshots and release downloads below show the Electron version.
+
+An initial self-contained x64 build measured approximately 167 MiB unpacked and 66 MiB as a ZIP; this is a preliminary measurement, not a promised release size. See the [WinUI build instructions](winui/README.md).
 
 ![EM Calculator Main Interface](docs/screenshots/main-interface.png)
 
@@ -24,7 +34,7 @@ Electron desktop application that calculates common electromagnetic engineering 
 Switch between English and 中文 via the in-app toggle or OS menu. The active language persists across sessions.
 
 ### 🔬 Python Verification (Dev Only)
-Each calculation tab exposes a "Verify with Python" button in development mode. The renderer spawns the Python implementation over IPC and reports the absolute delta against the in-process TypeScript result. Packaged builds drop Python entirely to keep the binary small.
+The Electron bandwidth and aperture-efficiency tabs expose a "Verify with Python" button in development mode. The renderer invokes the Python implementation over IPC and compares it with the TypeScript result. Packaged builds do not include Python.
 
 ### ♿ Accessibility
 Full keyboard navigation, ARIA roles, `prefers-reduced-motion` and `prefers-reduced-transparency` fallbacks.
@@ -76,17 +86,19 @@ python/
 └── tests/                # pytest, consumes the same fixtures.json as Vitest
 build/
 └── afterPack.cjs         # Strips unused Chromium locales during packaging
+winui/
+└── EMCalculator/         # Experimental WinUI 3 Windows application
 ```
 
 ## 📥 Download & Installation
 
-### Latest Release: [v0.2.0](https://github.com/SamDu1998/EM_Calculator/releases/latest)
+### Latest Release: [v0.3.0](https://github.com/SamDu1998/EM_Calculator/releases/tag/v0.3.0)
 
 | Platform | File | Size | Instructions |
 |----------|------|------|--------------|
-| **Windows** | `EM-Calculator-0.2.0-portable-x64.exe` | ~65 MB | Double-click to run. Self-extracts to `%TEMP%` and cleans up on close. |
-| **Windows** | `EM-Calculator-0.2.0-x64.zip` | ~98 MB | Extract and run `EM Calculator.exe` |
-| **Linux** | `EM-Calculator-0.2.0-x64.tar.gz` | ~90 MB | Extract and run `./EM-Calculator` |
+| **Windows** | `EM.Calculator-0.3.0-portable-x64.exe` | ~65 MiB | Double-click to run. |
+| **Windows** | `EM.Calculator-0.3.0-x64.zip` | ~98 MiB | Extract and run `EM Calculator.exe` |
+| **Linux** | `EM.Calculator-0.3.0-x64.tar.gz` | ~90 MiB | Extract and run the application executable. |
 
 **No installation required!** The portable `.exe` uses LZMA compression for the smallest single-file footprint. A custom `afterPack` hook strips ~40 MB of unused Chromium locale files (keeping only `en-*` and `zh-*`).
 
@@ -155,8 +167,9 @@ When the computed efficiency exceeds 100% the UI surfaces a warning, since this 
 - [x] **Apple Liquid Glass Design** — Completed in v0.2.0
 - [x] **Frameless Window** — Completed in v0.2.0
 - [x] **Responsive Layout** — Completed in v0.2.0
-- [x] **GitHub Actions CI/CD** — Automated release pipeline
+- [x] **GitHub Actions release pipeline** — Electron packaging on tagged releases
 - [x] **Wavelength, transmission line, and SIW calculators** — Completed in v0.3.0
+- [ ] Validate and complete the WinUI 3 Windows-native prototype, including calculation parity, accessibility and deployment
 - [ ] SVG cross-section visualizations for the transmission line and SIW tabs
 - [ ] **Linux AppImage** packaging via Docker or Linux host
 - [ ] Playwright E2E tests for tab switch, language switch, and Python verification

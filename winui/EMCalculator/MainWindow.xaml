@@ -1,0 +1,4 @@
+<Window x:Class="EMCalculator.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="EM Calculator">
+    <Window.SystemBackdrop><MicaBackdrop /></Window.SystemBackdrop>
+    <Frame x:Name="RootFrame" />
+</Window>

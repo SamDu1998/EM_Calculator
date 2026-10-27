@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "EMCalculator (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "EMCalculator (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

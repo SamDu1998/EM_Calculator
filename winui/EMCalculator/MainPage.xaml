@@ -1,0 +1,27 @@
+<Page x:Class="EMCalculator.MainPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <NavigationView x:Name="Navigation" Background="Transparent" IsSettingsVisible="False" IsBackButtonVisible="Collapsed" PaneTitle="EM Calculator" PaneDisplayMode="Left" SelectionChanged="Navigation_SelectionChanged">
+        <NavigationView.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.ThemeDictionaries>
+                    <ResourceDictionary x:Key="Default">
+                        <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
+                        <SolidColorBrush x:Key="NavigationViewContentGridBorderBrush" Color="Transparent" />
+                    </ResourceDictionary>
+                    <ResourceDictionary x:Key="HighContrast">
+                        <SolidColorBrush x:Key="NavigationViewContentBackground" Color="{ThemeResource SystemColorWindowColor}" />
+                        <SolidColorBrush x:Key="NavigationViewContentGridBorderBrush" Color="Transparent" />
+                    </ResourceDictionary>
+                </ResourceDictionary.ThemeDictionaries>
+            </ResourceDictionary>
+        </NavigationView.Resources>
+        <NavigationView.MenuItems>
+            <NavigationViewItem x:Name="BandwidthNav" Tag="bandwidth" Icon="Calculator" />
+            <NavigationViewItem x:Name="ApertureNav" Tag="aperture" Icon="Globe" />
+            <NavigationViewItem x:Name="WavelengthNav" Tag="wavelength" Icon="World" />
+            <NavigationViewItem x:Name="LineNav" Tag="line" Icon="Link" />
+            <NavigationViewItem x:Name="SiwNav" Tag="siw" Icon="AllApps" />
+        </NavigationView.MenuItems>
+        <NavigationView.PaneFooter><Button x:Name="LanguageButton" Click="Language_Click" Margin="12,4,12,12" /></NavigationView.PaneFooter>
+        <ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel x:Name="ContentPanel" MaxWidth="900" HorizontalAlignment="Stretch" Margin="32,28,32,48" Spacing="14" /></ScrollViewer>
+    </NavigationView>
+</Page>
