@@ -1,0 +1,14 @@
+<Project>
+  <PropertyGroup>
+    <Version>0.4.0</Version>
+    <Authors>Sam</Authors>
+    <Product>EM Calculator</Product>
+    <Description>Native Windows electromagnetic engineering calculator</Description>
+    <RepositoryUrl>https://github.com/SamDu1998/EM_Calculator</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Deterministic>true</Deterministic>
+    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)artifacts/obj/$(MSBuildProjectName)/</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(MSBuildThisFileDirectory)artifacts/bin/$(MSBuildProjectName)/</BaseOutputPath>
+    <DefaultItemExcludes>$(DefaultItemExcludes);**/bin/**;**/obj/**</DefaultItemExcludes>
+  </PropertyGroup>
+</Project>

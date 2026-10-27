@@ -1,40 +1,35 @@
-node_modules/
-out/
-dist/
+# .NET and Visual Studio
+**/bin/
+**/obj/
+artifacts/
+.vs/
+.idea/
+*.user
+*.suo
+*.binlog
 *.log
-*.tsbuildinfo
+TestResults/
+
+# Local development notes and secrets
+.claude/
 .env
 .env.*
 !.env.example
 
-# Python
-__pycache__/
-*.py[cod]
-.pytest_cache/
-.coverage
-coverage.xml
-htmlcov/
-
-# Test coverage
-coverage/
-
-# Playwright
-test-results/
-playwright-report/
-
-# OS
+# OS and editor files
 .DS_Store
 Thumbs.db
 desktop.ini
-
-# Editors
-.vscode/
 *.swp
 *.swo
 
-# electron-builder output (build/ keeps installer assets; dist/ is the actual output)
-build/output/
+# Legacy local outputs (not part of the native project)
+node_modules/
+out/
 release/
-
-# WinUI local publication output
-winui/publish/
+coverage/
+test-results/
+.pytest_cache/
+**/__pycache__/
+*.tsbuildinfo
+winui/

@@ -1,180 +1,76 @@
 # EM Calculator
 
-EM Calculator is a bilingual desktop tool for **relative bandwidth**, **aperture efficiency**, **wavelength**, **transmission line impedance** (microstrip / CPW / GCPW / coaxial), and **SIW via design**.
+Windows 原生电磁工程计算器，使用 **C#、WinUI 3 和 Windows App SDK**。界面采用系统 Mica 背景、原生控件和卡片布局，支持中文与 English，突出核心计算结果。
 
-The current public release is the Electron-based **v0.3.0** for Windows and Linux. A separate **WinUI 3 prototype** is being developed for a native Windows interface; it is not yet a replacement for the released app.
+Native Windows electromagnetic engineering calculator built with C# and WinUI 3. The application follows the system theme, uses Mica where available, and provides Chinese and English interfaces.
 
-## Windows-native prototype
+## 当前开发状态
 
-The [WinUI project](winui/README.md) uses native Windows controls, Mica, a system title bar, and card-based input and result sections. It includes Chinese and English interfaces and ports the five calculator pages. It targets Windows 10 1809 or newer; Windows 11 provides the intended Mica appearance.
+**0.4.0 开发主线已全面迁移到 WinUI 3。** UI、计算、测试及构建发布均使用 .NET；项目不再包含 Electron、React、Node.js 或 Python 实现。当前仓库尚未发布 0.4.0 正式版本；GitHub 上的 v0.3.0 及更早下载是历史 Electron 版本，不能代表当前代码。
 
-**Status:** experimental. The C# calculation port still needs automated parity tests against the existing TypeScript fixtures, and the app needs further accessibility, language-persistence, deployment, and clean-machine testing. Do not rely on the prototype for production engineering calculations. Existing screenshots and release downloads below show the Electron version.
+Windows x64 是当前构建与打包目标。项目声明的最低系统为 Windows 10 1809；目前本地验证环境为 Windows 11，旧版 Windows 和干净机器的运行验证仍待完成。Mica 的实际效果随系统主题、壁纸、透明效果和系统能力变化。
 
-An initial self-contained x64 build measured approximately 167 MiB unpacked and 66 MiB as a ZIP; this is a preliminary measurement, not a promised release size. See the [WinUI build instructions](winui/README.md).
+## 计算功能
 
-![EM Calculator Main Interface](docs/screenshots/main-interface.png)
-
-## ✨ Features
-
-### 🧮 Calculations
-- **Relative bandwidth**: enter `fmin` and `fmax` (with selectable Hz/kHz/MHz/GHz units); the app reports absolute bandwidth, center frequency, and the standard fractional bandwidth `(fmax − fmin) / fcenter`.
-- **Aperture efficiency**: enter frequency, antenna gain in dBi, and physical aperture area (m² or cm²); the app reports wavelength λ, effective aperture area Aₑ, and efficiency η, flagging over-unity inputs as physically inconsistent.
-- **Wavelength** *(new in v0.3.0)*: enter frequency and relative permittivity εᵣ; the app reports free-space wavelength λ₀, guided wavelength λg = λ₀/√εᵣ (TEM), λg/2, λg/4, and phase velocity.
-- **Transmission line impedance** *(new in v0.3.0)*: characteristic impedance Z₀, effective permittivity εeff, and phase velocity for four line types — **microstrip** (Hammerstad–Jensen), **CPW** and **GCPW** (Ghione–Naldi conformal mapping with an AGM-based elliptic integral), and **coaxial** (`Z₀ = 60/√εᵣ · ln(D/d)`). Lengths accept mm / µm / mil.
-- **SIW via design** *(new in v0.3.0)*: enter operating frequency, εᵣ, and via center-to-center width `a`; the app recommends via diameter `d ≈ λd/10` and pitch `p = 1.5·d` (Deslandes & Wu rules), and reports the equivalent width `aeff = a − d²/(0.95·p)` and TE₁₀ cutoff frequency, warning when the design is below cutoff.
-
-### 🎨 Design (v0.2.0)
-- **Apple Liquid Glass UI** — Inspired by Apple's 2026 design language with real-time backdrop blur, dynamic transparency (65-75%), and enhanced color saturation
-- **Frameless Window** — Custom title bar with window controls (minimize, maximize/restore, close), draggable region, and double-click to maximize
-- **Dynamic Animated Background** — Flowing gradient blobs with smooth 20-25s animation cycles and subtle rotation effects
-- **Responsive Layout** — Fluid scaling from 720×540 to 1600×900 with CSS `clamp()` functions
-- **Microsoft YaHei Font** — Optimized for Chinese, Japanese, and Korean character rendering
-
-### 🌐 Bilingual UI
-Switch between English and 中文 via the in-app toggle or OS menu. The active language persists across sessions.
-
-### 🔬 Python Verification (Dev Only)
-The Electron bandwidth and aperture-efficiency tabs expose a "Verify with Python" button in development mode. The renderer invokes the Python implementation over IPC and compares it with the TypeScript result. Packaged builds do not include Python.
-
-### ♿ Accessibility
-Full keyboard navigation, ARIA roles, `prefers-reduced-motion` and `prefers-reduced-transparency` fallbacks.
-
-## 📸 Screenshots
-
-### Main Interface - Bandwidth Calculator
-![Bandwidth Calculator](docs/screenshots/bandwidth-calculator.png)
-
-### Aperture Efficiency Calculator
-![Aperture Efficiency](docs/screenshots/aperture-efficiency.png)
-
-### Wavelength Calculator (v0.3.0)
-![Wavelength Calculator](docs/screenshots/wavelength-calculator.png)
-
-### Transmission Line Impedance (v0.3.0)
-![Transmission Line Calculator](docs/screenshots/transmission-line-calculator.png)
-
-### SIW Via Design (v0.3.0)
-![SIW Calculator](docs/screenshots/siw-calculator.png)
-
-### Liquid Glass Dynamic Background
-![Dynamic Background](docs/screenshots/dynamic-background.png)
-
----
-
-## Tech stack
-
-- Electron 33 with `contextIsolation: true`, `sandbox: true`, `nodeIntegration: false`, and a strict CSP meta in the renderer HTML.
-- electron-vite + Vite 6 + TypeScript + React 18.
-- Glassmorphism layered surfaces (animated gradient blobs, SVG turbulence grain, real backdrop-filter cards).
-- Vitest for renderer/lib tests; pytest for Python tests; shared `fixtures.json` ensures both implementations agree to within machine precision.
-
-## Project layout
-
-```
-src/
-├── main/                 # Electron main process: BrowserWindow, IPC, menu, Python subprocess wrapper
-├── preload/              # contextBridge surface exposed as window.emApi
-├── shared/               # IPC payload types shared between preload and renderer
-└── renderer/             # React UI
-    ├── components/       # Reusable UI parts (Tabs, GlassCard, NumberInput, ...)
-    ├── features/         # bandwidth/, aperture-efficiency/, wavelength/, transmission-line/, siw/, tbd/
-    ├── lib/              # Pure calculation functions, formatting, unit conversion
-    ├── i18n/             # Custom Context-based translation provider
-    └── styles/           # Design tokens + glass system
-python/
-├── em_calc.py            # CLI: actions = bandwidth | aperture-efficiency
-└── tests/                # pytest, consumes the same fixtures.json as Vitest
-build/
-└── afterPack.cjs         # Strips unused Chromium locales during packaging
-winui/
-└── EMCalculator/         # Experimental WinUI 3 Windows application
-```
-
-## 📥 Download & Installation
-
-### Latest Release: [v0.3.0](https://github.com/SamDu1998/EM_Calculator/releases/tag/v0.3.0)
-
-| Platform | File | Size | Instructions |
-|----------|------|------|--------------|
-| **Windows** | `EM.Calculator-0.3.0-portable-x64.exe` | ~65 MiB | Double-click to run. |
-| **Windows** | `EM.Calculator-0.3.0-x64.zip` | ~98 MiB | Extract and run `EM Calculator.exe` |
-| **Linux** | `EM.Calculator-0.3.0-x64.tar.gz` | ~90 MiB | Extract and run the application executable. |
-
-**No installation required!** The portable `.exe` uses LZMA compression for the smallest single-file footprint. A custom `afterPack` hook strips ~40 MB of unused Chromium locale files (keeping only `en-*` and `zh-*`).
-
-**No user data is stored.** Calculations are stateless — closing the app leaves nothing behind besides the OS-managed Chromium cache.
-
----
-
-## 🛠️ Development
-
-## Getting started
-
-Prerequisites: Node 20+ and (for development) Python 3.10+.
-
-```sh
-npm install
-npm run dev            # Launches Electron pointing at the Vite dev server
-```
-
-### Useful scripts
-
-| Script | Purpose |
+| 功能 | 输出及模型 |
 |---|---|
-| `npm run dev` | Hot-reloading dev mode (Electron + Vite) |
-| `npm run build` | Production bundle into `out/` (no installer) |
-| `npm run dist:win` | Windows portable `.exe` + `.zip` into `release/` |
-| `npm run dist:linux` | Linux `.tar.gz` into `release/` |
-| `npm test` | Vitest unit tests with v8 coverage |
-| `npm run lint` | ESLint flat config across `src/` |
-| `npm run typecheck` | Composite tsc check for both node and web tsconfigs |
-| `python -m pytest python/` | Run the Python reference test suite (dev only) |
+| 相对带宽 | 相对带宽、绝对带宽、中心频率 |
+| 口径效率 | 效率、有效口径面积、波长；超过 100% 时提示 |
+| 波长 | 自由空间与均匀介质内波长、半波长、四分之一波长、相速度 |
+| 传输线阻抗 | Microstrip、CPW、GCPW、Coaxial 的阻抗、有效介电常数、相速度 |
+| SIW 通孔设计 | 推荐孔径、孔距、等效宽度、TE₁₀ 截止频率及截止提示 |
 
-## Distribution
+频率支持 Hz/kHz/MHz/GHz；长度支持 mm/µm/mil；面积支持 m²/cm²。支持科学计数法，输入后实时计算。页面、语言和传输线类型切换时保留当前会话输入；语言偏好保存在 `%LOCALAPPDATA%/EMCalculator/settings.json`，计算输入不写入磁盘。
 
-The app ships **without an installer** — pick whichever shape suits you:
+模型采用无损、准静态近似。微带线采用零导体厚度的 Hammerstad–Jensen 模型；CPW/GCPW 采用共形映射；同轴线采用 TEM 模型。SIW 通孔推荐使用介质波长，不等同于色散波导中的导波波长。详见 [计算模型与验证](docs/calculations.md)。
 
-| Artifact | Size | How to run |
-|---|---|---|
-| `EM Calculator-<v>-portable-x64.exe` | ~65 MB | Double-click. Self-extracts to `%TEMP%` and cleans up on close. |
-| `EM Calculator-<v>-x64.zip` | ~98 MB | Unzip, run `EM Calculator.exe` from the extracted folder. |
-| `EM Calculator-<v>-x64.tar.gz` | ~90 MB | Extract, run `./em-calculator` from the extracted folder. |
+## 开发与运行
 
-The portable `.exe` uses LZMA compression for the smallest single-file footprint. A custom `afterPack` hook in `build/afterPack.cjs` strips ~40 MB of unused Chromium locale files (keeping only `en-*` and `zh-*`), so the packaged app starts at ~75 MB on disk rather than the default ~115 MB.
+需要 Windows 和 **.NET 8 SDK**，依赖由 NuGet 恢复。不需要 Node.js、npm、Python，也不需要安装 Visual Studio 才能使用命令行构建。Visual Studio 用户可打开 `EMCalculator.sln`，选择 x64。
 
-**Linux AppImage** is supported by electron-builder but requires running the build on Linux (or via Docker / WSL with a real distribution) because the `mksquashfs` tool is Linux-only. The Windows host falls back to `.tar.gz`.
+在仓库根目录运行 PowerShell：
 
-**No user data is stored.** Calculations are stateless — closing the app leaves nothing behind besides the OS-managed Chromium cache. The portable build keeps that cache in `%TEMP%` and discards it on exit.
+```powershell
+./build.ps1 -Task Verify          # 运行计算回归测试并构建原生应用
+./build.ps1 -Task Run -Configuration Debug
+./build.ps1 -Task Publish         # 测试 + 独立发布 + ZIP
+```
 
-## Calculation details
+也可直接使用 .NET CLI：
 
-Relative bandwidth uses the engineering convention `(fmax − fmin) / fcenter × 100%` where `fcenter = (fmax + fmin) / 2`.
+```powershell
+dotnet run --project tests/EMCalculator.Tests -c Release
+dotnet build src/EMCalculator/EMCalculator.csproj -c Debug -p:Platform=x64
+dotnet publish src/EMCalculator/EMCalculator.csproj -c Release -r win-x64 --self-contained true -p:Platform=x64 -o artifacts/publish/win-x64
+```
 
-Aperture efficiency follows `η = Aₑ / Aphys` where `Aₑ = (λ² / 4π) · 10^(G/10)` and `λ = c / f` with `c = 299_792_458 m/s`.
+计算回归测试使用一个无第三方测试框架依赖的控制台运行器，断言失败会返回非零退出码。不要用 `dotnet test` 替代上述 `dotnet run` 命令。
 
-When the computed efficiency exceeds 100% the UI surfaces a warning, since this implies the supplied gain or physical area is physically inconsistent rather than the calculator being wrong.
+## 打包与下载
 
-### v0.3.0 calculator models
+`Publish` 输出 `artifacts/EM-Calculator-0.4.0-win-x64.zip`。解压整个文件夹后运行 `EMCalculator.exe`，请保留随附 DLL、资源及子目录。独立包包含 .NET 与 Windows App SDK 运行时，无需用户另外安装这些运行时；无需浏览器运行时来渲染界面。
 
-- **Wavelength**: `λ₀ = c/f`, `λg = λ₀/√εᵣ` for a TEM wave in a uniform dielectric, phase velocity `vₚ = c/√εᵣ`.
-- **Microstrip**: Hammerstad–Jensen closed-form model (1980), zero conductor thickness. The UI warns when `W/h` leaves the validated `0.01 – 100` range. Verified against the classic 50 Ω FR4 design (`W = 3.06 mm, h = 1.6 mm, εᵣ = 4.4`) and the textbook 126.5 Ω air line at `W/h = 1`.
-- **CPW / GCPW**: conformal-mapping formulas (Ghione–Naldi 1987 / Simons) using the complete elliptic integral of the first kind, computed with the AGM iteration to ~1e-15. The implementation reproduces the analytic thick-substrate limit `εeff → (εᵣ+1)/2` exactly.
-- **Coaxial**: TEM `Z₀ = 60/√εᵣ · ln(D/d)`, verified against RG-405 (50 Ω) and RG-6-class (75 Ω) cable geometries.
-- **SIW**: Deslandes & Wu (2001) — `aeff = a − d²/(0.95·p)`, `fc = c/(2·aeff·√εᵣ)`, with the conservative via rules `d ≈ λd/10`, `p = 1.5·d` (inside the typical `1.5d – 2d` window).
+包大小以完整发布目录和 ZIP 为准，不能只看启动 EXE。WinUI 3 不保证独立包一定比历史 Electron 便携版更小。
 
-## 🚀 Roadmap
+GitHub Actions 会在推送或 PR 时验证并生成 Windows 构建产物；版本标签（如 `v0.4.0`）触发正式发布流程。历史版本见 [Releases](https://github.com/SamDu1998/EM_Calculator/releases)。
 
-- [x] **Apple Liquid Glass Design** — Completed in v0.2.0
-- [x] **Frameless Window** — Completed in v0.2.0
-- [x] **Responsive Layout** — Completed in v0.2.0
-- [x] **GitHub Actions release pipeline** — Electron packaging on tagged releases
-- [x] **Wavelength, transmission line, and SIW calculators** — Completed in v0.3.0
-- [ ] Validate and complete the WinUI 3 Windows-native prototype, including calculation parity, accessibility and deployment
-- [ ] SVG cross-section visualizations for the transmission line and SIW tabs
-- [ ] **Linux AppImage** packaging via Docker or Linux host
-- [ ] Playwright E2E tests for tab switch, language switch, and Python verification
-- [ ] Additional calculators in the "More" tab (Friis path loss, antenna radiation pattern, impedance matching)
+## 项目结构
 
-## 📄 License
+```text
+src/EMCalculator/          WinUI 3 应用、导航、输入和结果展示、偏好设置
+src/EMCalculator.Core/     独立的纯 C# 计算、验证与单位换算
+tests/EMCalculator.Tests/  参考数据、数值回归与边界检查
+build.ps1                 统一测试、构建、运行和打包入口
+.github/workflows/        Windows CI 和发布流程
+```
+
+## 后续工作
+
+- 干净机器及 Windows 10 兼容性验证
+- 原生 UI 自动化测试、键盘和高对比度检查
+- 传输线与 SIW 结构示意图
+- 评估发布包裁剪、签名与更新方式
+
+## License
 
 MIT
