@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.4.0 — unreleased
+## 0.4.0 — 2026-10-27
 
 - Make WinUI 3 the sole application implementation and move it into `src/EMCalculator`.
 - Remove Electron, React, TypeScript, Python, their toolchains and the legacy UI screenshots.

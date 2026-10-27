@@ -6,7 +6,7 @@ Native Windows electromagnetic engineering calculator built with C# and WinUI 3.
 
 ## 当前开发状态
 
-**0.4.0 开发主线已全面迁移到 WinUI 3。** UI、计算、测试及构建发布均使用 .NET；项目不再包含 Electron、React、Node.js 或 Python 实现。当前仓库尚未发布 0.4.0 正式版本；GitHub 上的 v0.3.0 及更早下载是历史 Electron 版本，不能代表当前代码。
+**0.4.0 开发主线已全面迁移到 WinUI 3。** UI、计算、测试及构建发布均使用 .NET；项目不再包含 Electron、React、Node.js 或 Python 实现。当前版本为 [v0.4.0](https://github.com/SamDu1998/EM_Calculator/releases/tag/v0.4.0)，是首个以 WinUI 3 为唯一实现的版本。v0.3.0 及更早下载是历史 Electron 版本。
 
 Windows x64 是当前构建与打包目标。项目声明的最低系统为 Windows 10 1809；目前本地验证环境为 Windows 11，旧版 Windows 和干净机器的运行验证仍待完成。Mica 的实际效果随系统主题、壁纸、透明效果和系统能力变化。
 
