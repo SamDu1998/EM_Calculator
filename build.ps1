@@ -26,7 +26,7 @@ function Invoke-DotNet {
 Push-Location $PSScriptRoot
 try {
     $app = 'src/EMCalculator/EMCalculator.csproj'
-    if ($Task -in @('Test', 'Verify', 'Publish')) {
+    if ($Task -in @('Test', 'Verify', 'Publish', 'Package')) {
         Invoke-DotNet -Arguments @('run', '--project', 'tests/EMCalculator.Tests', '-c', $Configuration)
     }
     if ($Task -in @('Build', 'Verify', 'Run')) {

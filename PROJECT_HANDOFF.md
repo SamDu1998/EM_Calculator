@@ -22,6 +22,7 @@ A Windows x64 electromagnetic engineering calculator for antenna engineers. The 
 - The v0.7.0 package was built locally and signed with the existing development certificate. `signtool verify /pa` reports the expected untrusted self-signed certificate chain on machines that have not trusted the certificate.
 - `AppxManifest` is now included only when `WindowsPackageType` is not `None`, allowing unpackaged builds and MSIX builds to use the same project file.
 - The current source includes the linear-array calculator with element count limited to 2–32, spacing relative to free-space wavelength, broadside-referenced scan angle, phase step, aperture length, and grating-lobe warning.
+- Post-release follow-up adds regression fixtures and boundary/use-case checks for the patch and linear-array models; `./build.ps1 -Task Verify` passes 172 checks. `Package` now runs the calculation suite before packaging. v0.7.0 itself was published before these tests were added; no application-code bug was found by the new suite. Future feature releases must pass `Verify` before packaging.
 
 ## Build and run
 
@@ -48,7 +49,7 @@ On Windows with the .NET 8 SDK, from the repository root in PowerShell:
 
 ## Product direction and roadmap
 
-Build a compact antenna-engineering toolbox around the workflow **estimate requirements → size an antenna → design its feed → estimate array/system behavior**. Keep each tool focused and use a consistent pattern for inputs and units, key results, a schematic, and model assumptions. This is a calculator toolbox, not a full-wave simulator or general RF suite.
+Build a compact antenna-engineering toolbox around the workflow **estimate requirements → size an antenna → design its feed → estimate array/system behavior**. Keep each tool focused and use a consistent pattern for inputs and units, key results, a schematic, and model assumptions. This is a calculator toolbox, not a full-wave simulator or general RF suite. Every new calculation must add representative numerical fixtures plus invalid-input, boundary, and physical-relationship tests. Run `./build.ps1 -Task Verify` before release; `Package` now enforces the test run.
 
 1. **UI acceptance:** review compact/standard/wide layouts at multiple display scales, check Chinese/English, keyboard and high-contrast behavior, then refresh the README screenshot.
 2. **Toolbox organization:** v0.6.0 groups tools under basic estimates, antenna design, and feed/guided structures. Add search only when the growing tool list needs it.

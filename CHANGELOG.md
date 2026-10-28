@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Add numerical use-case fixtures and invalid/boundary checks for patch and linear-array calculations.
+- Run the regression test runner before producing an MSIX package.
+
 ## 0.7.0 — 2026-10-28
 
 - Add a uniform linear-array estimator for spacing, scan phase, aperture, and grating-lobe risk.

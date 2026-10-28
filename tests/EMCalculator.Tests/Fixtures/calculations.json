@@ -381,5 +381,123 @@
         "belowCutoff": true
       }
     }
+  ],
+  "rectangularPatch": [
+    {
+      "name": "FR4_2p4GHz_1p6mm",
+      "frequencyHz": 2400000000.0,
+      "er": 4.4,
+      "substrateHeightM": 0.0016,
+      "expected": {
+        "widthM": 0.0380099749575278,
+        "lengthM": 0.0294215930843705,
+        "epsilonEff": 4.085676444332395,
+        "lengthExtensionM": 0.0007388121658400268,
+        "effectiveLengthM": 0.030899217416050555,
+        "outsideValidatedRange": false
+      }
+    },
+    {
+      "name": "RO4350B_5p8GHz",
+      "frequencyHz": 5800000000.0,
+      "er": 3.48,
+      "substrateHeightM": 0.000508,
+      "expected": {
+        "widthM": 0.01726786737953843,
+        "lengthM": 0.013726181199303897,
+        "epsilonEff": 3.306028145646316,
+        "lengthExtensionM": 0.00024379696586957877,
+        "effectiveLengthM": 0.014213775131043055,
+        "outsideValidatedRange": false
+      }
+    },
+    {
+      "name": "high_permittivity_warning",
+      "frequencyHz": 10000000000.0,
+      "er": 129.0,
+      "substrateHeightM": 0.001,
+      "expected": {
+        "widthM": 0.001859233897993821,
+        "lengthM": 0.000931833551029796,
+        "epsilonEff": 88.44106700677628,
+        "lengthExtensionM": 0.0003310380871295451,
+        "effectiveLengthM": 0.0015939097252888861,
+        "outsideValidatedRange": true
+      }
+    }
+  ],
+  "uniformLinearArray": [
+    {
+      "name": "broadside_halfwave_8_elements_10GHz",
+      "frequencyHz": 10000000000.0,
+      "elementCount": 8.0,
+      "spacingRatio": 0.5,
+      "scanAngleDegrees": 0.0,
+      "expected": {
+        "wavelengthM": 0.0299792458,
+        "elementCount": 8,
+        "spacingRatio": 0.5,
+        "elementSpacingM": 0.0149896229,
+        "apertureLengthM": 0.1049273603,
+        "scanAngleDegrees": 0.0,
+        "progressivePhaseDegrees": 0.0,
+        "gratingLobeLimitSpacingRatio": 1.0,
+        "gratingLobesPossible": false
+      }
+    },
+    {
+      "name": "scanned_45deg_16_elements_5p8GHz",
+      "frequencyHz": 5800000000.0,
+      "elementCount": 16.0,
+      "spacingRatio": 0.5,
+      "scanAngleDegrees": 45.0,
+      "expected": {
+        "wavelengthM": 0.05168835482758621,
+        "elementCount": 16,
+        "spacingRatio": 0.5,
+        "elementSpacingM": 0.025844177413793103,
+        "apertureLengthM": 0.3876626612068966,
+        "scanAngleDegrees": 45.0,
+        "progressivePhaseDegrees": 127.27922061357856,
+        "gratingLobeLimitSpacingRatio": 0.585786437626905,
+        "gratingLobesPossible": false
+      }
+    },
+    {
+      "name": "scan_60deg_grating_lobe_warning",
+      "frequencyHz": 10000000000.0,
+      "elementCount": 8.0,
+      "spacingRatio": 0.55,
+      "scanAngleDegrees": 60.0,
+      "expected": {
+        "wavelengthM": 0.0299792458,
+        "elementCount": 8,
+        "spacingRatio": 0.55,
+        "elementSpacingM": 0.016488585190000002,
+        "apertureLengthM": 0.11542009633000001,
+        "scanAngleDegrees": 60.0,
+        "progressivePhaseDegrees": 171.47302994931886,
+        "gratingLobeLimitSpacingRatio": 0.5358983848622454,
+        "gratingLobesPossible": true
+      }
+    },
+    {
+      "name": "negative_scan_30deg",
+      "frequencyHz": 2400000000.0,
+      "elementCount": 4.0,
+      "spacingRatio": 0.45,
+      "scanAngleDegrees": -30.0,
+      "expected": {
+        "wavelengthM": 0.12491352416666666,
+        "elementCount": 4,
+        "spacingRatio": 0.45,
+        "elementSpacingM": 0.056211085875,
+        "apertureLengthM": 0.16863325762499998,
+        "scanAngleDegrees": -30.0,
+        "progressivePhaseDegrees": -80.99999999999999,
+        "gratingLobeLimitSpacingRatio": 0.6666666666666666,
+        "gratingLobesPossible": false
+      }
+    }
   ]
 }

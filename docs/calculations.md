@@ -23,6 +23,6 @@ The WinUI pages include schematic cross-sections for the four transmission-line 
 
 Run `dotnet run --project tests/EMCalculator.Tests -c Release`.
 
-The 31 regression cases in `tests/EMCalculator.Tests/Fixtures/calculations.json` preserve the numerical expectations from the previous implementation across all eight model groups. Additional checks cover invalid inputs, unit conversion, elliptic-integral reference values, physical relationships, and analytic limits. Numeric fixture comparisons use a relative tolerance of 1e-10 (absolute floor 1e-12).
+The fixture file contains 38 fixed numerical use cases across ten model groups, including rectangular-patch sizing and linear-array scanning. Additional checks cover invalid inputs, unit conversion, elliptic-integral reference values, patch resonance relationships, array scan symmetry, element-count limits, and the scan-dependent grating-lobe threshold. Numeric fixture comparisons use a relative tolerance of 1e-10 (absolute floor 1e-12).
 
 These regression cases establish continuity with the previous implementation; they do not constitute independent full-wave electromagnetic validation. The test runner returns a non-zero exit code on failure and is used by the Windows CI and release workflows.

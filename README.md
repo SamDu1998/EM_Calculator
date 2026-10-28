@@ -39,7 +39,7 @@ Windows x64 是当前构建与打包目标。项目声明的最低系统为 Wind
 ```powershell
 ./build.ps1 -Task Verify          # 运行计算回归测试并构建原生应用
 ./build.ps1 -Task Run -Configuration Debug
-./build.ps1 -Task Package         # 生成 Windows x64 MSIX 候选包
+./build.ps1 -Task Package         # 运行回归测试并生成 Windows x64 MSIX 候选包
 ./build.ps1 -Task Publish         # 测试 + 旧式独立 ZIP
 ```
 
@@ -57,7 +57,7 @@ dotnet publish src/EMCalculator/EMCalculator.csproj -c Release -r win-x64 --self
 
 ## 打包与下载
 
-`Package` 输出 Windows x64 MSIX 候选包，适合提交 Microsoft Store。目前候选包约 **41.9 MiB**；v0.4.0 独立 ZIP 约 **66.4 MiB**。Windows App SDK Framework 作为共享依赖单独管理，首次安装时若系统缺少它，安装流程还需要获取该运行时。MSIX 包内仍携带 .NET 运行时，因此在干净系统上也能启动。安装后的应用由 Windows 管理，可从开始菜单或“设置 → 应用”启动和卸载。正式商店提交还需要设置 Partner Center 分配的包名和 Publisher 身份。
+`Package` 先运行计算回归测试，再生成 Windows x64 MSIX 候选包，适合提交 Microsoft Store。目前候选包约 **41.9 MiB**；v0.4.0 独立 ZIP 约 **66.4 MiB**。Windows App SDK Framework 作为共享依赖单独管理，首次安装时若系统缺少它，安装流程还需要获取该运行时。MSIX 包内仍携带 .NET 运行时，因此在干净系统上也能启动。安装后的应用由 Windows 管理，可从开始菜单或“设置 → 应用”启动和卸载。正式商店提交还需要设置 Partner Center 分配的包名和 Publisher 身份。
 
 自签名试用包需要用户手动将附带的开发证书导入本地计算机的“受信任的人员”，并在缺少 Windows App Runtime 时安装附带的依赖；卸载应用不会移除该证书。公开分发可使用受信任的代码签名证书，Microsoft Store 会在审核后重新签名。旧式独立 ZIP 仍可通过 `Publish` 任务生成，便于需要免安装便携版的场景。
 
