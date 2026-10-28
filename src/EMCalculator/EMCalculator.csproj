@@ -24,7 +24,9 @@
   <ItemGroup>
     <ProjectReference Include="../EMCalculator.Core/EMCalculator.Core.csproj" />
     <Content Include="Assets\AppIcon.ico" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="Assets\StoreLogo.png;Assets\Square44x44Logo.png;Assets\Square150x150Logo.png" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Manifest Include="$(ApplicationManifest)" />
+    <AppxManifest Include="Package.appxmanifest" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.3916" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250606001" />
   </ItemGroup>

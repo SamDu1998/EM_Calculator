@@ -4,9 +4,11 @@ Windows 原生电磁工程计算器，使用 **C#、WinUI 3 和 Windows App SDK*
 
 Native Windows electromagnetic engineering calculator built with C# and WinUI 3. The application follows the system theme, uses Mica where available, and provides Chinese and English interfaces.
 
+![EM Calculator running on Windows](docs/images/app-screenshot.jpg)
+
 ## 当前开发状态
 
-**0.4.0 开发主线已全面迁移到 WinUI 3。** UI、计算、测试及构建发布均使用 .NET；项目不再包含 Electron、React、Node.js 或 Python 实现。当前版本为 [v0.4.0](https://github.com/SamDu1998/EM_Calculator/releases/tag/v0.4.0)，是首个以 WinUI 3 为唯一实现的版本。v0.3.0 及更早下载是历史 Electron 版本。
+**0.4.1 提供自签名 MSIX 试用版。** UI、计算、测试及构建发布均使用 .NET；项目不再包含 Electron、React、Node.js 或 Python 实现。v0.4.0 是首个以 WinUI 3 为唯一实现的版本，v0.3.0 及更早下载是历史 Electron 版本。
 
 Windows x64 是当前构建与打包目标。项目声明的最低系统为 Windows 10 1809；目前本地验证环境为 Windows 11，旧版 Windows 和干净机器的运行验证仍待完成。Mica 的实际效果随系统主题、壁纸、透明效果和系统能力变化。
 
@@ -20,7 +22,7 @@ Windows x64 是当前构建与打包目标。项目声明的最低系统为 Wind
 | 传输线阻抗 | Microstrip、CPW、GCPW、Coaxial 的阻抗、有效介电常数、相速度 |
 | SIW 通孔设计 | 推荐孔径、孔距、等效宽度、TE₁₀ 截止频率及截止提示 |
 
-频率支持 Hz/kHz/MHz/GHz；长度支持 mm/µm/mil；面积支持 m²/cm²。支持科学计数法，输入后实时计算。页面、语言和传输线类型切换时保留当前会话输入；语言偏好保存在 `%LOCALAPPDATA%/EMCalculator/settings.json`，计算输入不写入磁盘。
+频率支持 Hz/kHz/MHz/GHz；长度支持 mm/µm/mil；面积支持 m²/cm²。支持科学计数法，输入后实时计算。页面、语言和传输线类型切换时保留当前会话输入；MSIX 版将语言偏好保存在应用私有数据目录，卸载时由 Windows 清理；便携版使用 `%LOCALAPPDATA%/EMCalculator/settings.json`。计算输入不写入磁盘。
 
 模型采用无损、准静态近似。微带线采用零导体厚度的 Hammerstad–Jensen 模型；CPW/GCPW 采用共形映射；同轴线采用 TEM 模型。SIW 通孔推荐使用介质波长，不等同于色散波导中的导波波长。详见 [计算模型与验证](docs/calculations.md)。
 
@@ -33,7 +35,8 @@ Windows x64 是当前构建与打包目标。项目声明的最低系统为 Wind
 ```powershell
 ./build.ps1 -Task Verify          # 运行计算回归测试并构建原生应用
 ./build.ps1 -Task Run -Configuration Debug
-./build.ps1 -Task Publish         # 测试 + 独立发布 + ZIP
+./build.ps1 -Task Package         # 生成 Windows x64 MSIX 候选包
+./build.ps1 -Task Publish         # 测试 + 旧式独立 ZIP
 ```
 
 也可直接使用 .NET CLI：
@@ -44,15 +47,17 @@ dotnet build src/EMCalculator/EMCalculator.csproj -c Debug -p:Platform=x64
 dotnet publish src/EMCalculator/EMCalculator.csproj -c Release -r win-x64 --self-contained true -p:Platform=x64 -o artifacts/publish/win-x64
 ```
 
+单项目 MSIX 发布命令为 `./build.ps1 -Task Package -Version 0.4.1`。提交 Microsoft Store 前，需要把 `Package.appxmanifest` 和 `Directory.Build.props` 中的包名与 Publisher 值替换为 Partner Center 分配的身份。Store 会为上架包签名；直接从网站分发 MSIX 则需要受信任的代码签名证书。
+
 计算回归测试使用一个无第三方测试框架依赖的控制台运行器，断言失败会返回非零退出码。不要用 `dotnet test` 替代上述 `dotnet run` 命令。
 
 ## 打包与下载
 
-`Publish` 输出 `artifacts/EM-Calculator-0.4.0-win-x64.zip`。解压整个文件夹后运行 `EMCalculator.exe`，请保留随附 DLL、资源及子目录。独立包包含 .NET 与 Windows App SDK 运行时，无需用户另外安装这些运行时；无需浏览器运行时来渲染界面。
+`Package` 输出 Windows x64 MSIX 候选包，适合提交 Microsoft Store。目前候选包约 **41.9 MiB**；v0.4.0 独立 ZIP 约 **66.4 MiB**。Windows App SDK Framework 作为共享依赖单独管理，首次安装时若系统缺少它，安装流程还需要获取该运行时。MSIX 包内仍携带 .NET 运行时，因此在干净系统上也能启动。安装后的应用由 Windows 管理，可从开始菜单或“设置 → 应用”启动和卸载。正式商店提交还需要设置 Partner Center 分配的包名和 Publisher 身份。
 
-包大小以完整发布目录和 ZIP 为准，不能只看启动 EXE。WinUI 3 不保证独立包一定比历史 Electron 便携版更小。
+自签名试用包需要用户手动将附带的开发证书导入本地计算机的“受信任的人员”，并在缺少 Windows App Runtime 时安装附带的依赖；卸载应用不会移除该证书。公开分发可使用受信任的代码签名证书，Microsoft Store 会在审核后重新签名。旧式独立 ZIP 仍可通过 `Publish` 任务生成，便于需要免安装便携版的场景。
 
-GitHub Actions 会在推送或 PR 时验证并生成 Windows 构建产物；版本标签（如 `v0.4.0`）触发正式发布流程。历史版本见 [Releases](https://github.com/SamDu1998/EM_Calculator/releases)。
+GitHub Actions 可手动生成未签名的 MSIX 构建产物；发布用的自签名包需单独签名。正式商店上架需在 Partner Center 完成提交。历史版本见 [Releases](https://github.com/SamDu1998/EM_Calculator/releases)。
 
 ## 项目结构
 
