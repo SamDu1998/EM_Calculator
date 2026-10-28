@@ -11,6 +11,7 @@ public sealed record WavelengthResult(double Lambda0M, double LambdaGM, double H
 public sealed record LineResult(double Z0Ohm, double EpsilonEff, double PhaseVelocityMPerS, bool OutsideValidatedRange = false);
 public sealed record SiwResult(double ViaDiameterM, double ViaPitchM, double EffectiveWidthM, double CutoffFrequencyHz, bool BelowCutoff);
 public sealed record PatchAntennaResult(double WidthM, double LengthM, double EpsilonEff, double LengthExtensionM, double EffectiveLengthM, bool OutsideValidatedRange);
+public sealed record LinearArrayResult(double WavelengthM, int ElementCount, double SpacingRatio, double ElementSpacingM, double ApertureLengthM, double ScanAngleDegrees, double ProgressivePhaseDegrees, double GratingLobeLimitSpacingRatio, bool GratingLobesPossible);
 public enum LineType { Microstrip, Cpw, Gcpw, Coaxial }
 
 /// <summary>SI inputs. Quasi-static, lossless transmission-line models; zero conductor thickness.</summary>
@@ -77,6 +78,29 @@ public static class Calculations
         bool outsideValidatedRange = !double.IsFinite(widthToHeight)
             || widthToHeight < 0.01 || widthToHeight > 100 || er > 128;
         return new(width, length, epsilonEff, deltaLength, effectiveLength, outsideValidatedRange);
+    }
+    // Uniformly excited linear array; theta is measured from broadside and positive phase steers positive theta.
+    public static LinearArrayResult UniformLinearArray(double frequency, double elementCount, double spacingRatio, double scanAngleDegrees)
+    {
+        Positive(frequency, "frequency_not_positive");
+        Positive(spacingRatio, "spacing_ratio_not_positive");
+        if (!double.IsFinite(elementCount) || elementCount != Math.Truncate(elementCount) || elementCount < 2 || elementCount > 32)
+            throw new CalculationException("element_count_invalid");
+        if (!double.IsFinite(scanAngleDegrees) || scanAngleDegrees < -90 || scanAngleDegrees > 90)
+            throw new CalculationException("scan_angle_out_of_range");
+
+        int count = (int)elementCount;
+        double wavelength = Finite(SpeedOfLight / frequency);
+        double spacing = Finite(spacingRatio * wavelength);
+        double apertureLength = Finite((count - 1) * spacing);
+        if (spacing <= 0) throw new CalculationException("out_of_range");
+
+        double sinScan = Math.Sin(scanAngleDegrees * Math.PI / 180);
+        double phaseDegrees = Finite(360 * spacingRatio * sinScan);
+        phaseDegrees = Math.IEEERemainder(phaseDegrees, 360);
+        double gratingLobeLimit = 1 / (1 + Math.Abs(sinScan));
+        bool gratingLobesPossible = spacingRatio >= gratingLobeLimit;
+        return new(wavelength, count, spacingRatio, spacing, apertureLength, scanAngleDegrees, phaseDegrees, gratingLobeLimit, gratingLobesPossible);
     }
     // Hammerstad–Jensen (1980), negligible conductor thickness.
     public static LineResult Microstrip(double width, double height, double er)

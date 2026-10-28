@@ -8,7 +8,7 @@ Native Windows electromagnetic engineering calculator built with C# and WinUI 3.
 
 ## 当前开发状态
 
-**0.6.0 提供自签名 MSIX 试用版。** UI、计算、测试及构建发布均使用 .NET；项目不再包含 Electron、React、Node.js 或 Python 实现。v0.4.0 是首个以 WinUI 3 为唯一实现的版本，v0.3.0 及更早下载是历史 Electron 版本。
+**0.7.0 提供自签名 MSIX 试用版。** UI、计算、测试及构建发布均使用 .NET；项目不再包含 Electron、React、Node.js 或 Python 实现。v0.4.0 是首个以 WinUI 3 为唯一实现的版本，v0.3.0 及更早下载是历史 Electron 版本。
 
 Windows x64 是当前构建与打包目标。项目声明的最低系统为 Windows 10 1809；目前本地验证环境为 Windows 11，旧版 Windows 和干净机器的运行验证仍待完成。Mica 的实际效果随系统主题、壁纸、透明效果和系统能力变化。
 
@@ -20,12 +20,13 @@ Windows x64 是当前构建与打包目标。项目声明的最低系统为 Wind
 | 口径效率 | 效率、有效口径面积、波长；超过 100% 时提示 |
 | 波长 | 自由空间与均匀介质内波长、半波长、四分之一波长、相速度 |
 | 矩形微带贴片初算 | TM₁₀ 模式下的贴片宽度、长度、有效介电常数与边缘延伸 |
+| 均匀线阵初算 | 阵元间距、总孔径、扫描相位步进与栅瓣提示 |
 | 传输线阻抗 | Microstrip、CPW、GCPW、Coaxial 的阻抗、有效介电常数、相速度 |
 | SIW 通孔设计 | 推荐孔径、孔距、等效宽度、TE₁₀ 截止频率及截止提示 |
 
 频率支持 Hz/kHz/MHz/GHz；长度支持 mm/µm/mil；面积支持 m²/cm²。支持科学计数法，输入后实时计算。页面、语言和传输线类型切换时保留当前会话输入；MSIX 版将语言偏好保存在应用私有数据目录，卸载时由 Windows 清理；便携版使用 `%LOCALAPPDATA%/EMCalculator/settings.json`。计算输入不写入磁盘。
 
-矩形贴片页面给出初始尺寸和 TM₁₀ 的俯视/横截面示意；传输线页面按 Microstrip、CPW、GCPW、Coaxial 类型显示对应横截面；SIW 页面显示通孔围栏俯视图。示意图会标注当前输入和派生尺寸，结构图不按比例绘制。内容区域随窗口宽度在单列和双列间切换，并在宽窗口中保持居中；导航、字号和控件支持系统 DPI 与文本缩放。
+矩形贴片页面给出初始尺寸和 TM₁₀ 的俯视/横截面示意；线阵页面显示阵元间距和扫描方向；传输线页面按 Microstrip、CPW、GCPW、Coaxial 类型显示对应横截面；SIW 页面显示通孔围栏俯视图。示意图会标注当前输入和派生尺寸，结构图不按比例绘制。内容区域随窗口宽度在单列和双列间切换，并在宽窗口中保持居中；导航、字号和控件支持系统 DPI 与文本缩放。
 
 模型采用无损、准静态近似。微带线采用零导体厚度的 Hammerstad–Jensen 模型；CPW/GCPW 采用共形映射；同轴线采用 TEM 模型。SIW 通孔推荐使用介质波长，不等同于色散波导中的导波波长。详见 [计算模型与验证](docs/calculations.md)。
 
@@ -50,7 +51,7 @@ dotnet build src/EMCalculator/EMCalculator.csproj -c Debug -p:Platform=x64
 dotnet publish src/EMCalculator/EMCalculator.csproj -c Release -r win-x64 --self-contained true -p:Platform=x64 -o artifacts/publish/win-x64
 ```
 
-单项目 MSIX 发布命令为 `./build.ps1 -Task Package -Version 0.6.0`。提交 Microsoft Store 前，需要把 `Package.appxmanifest` 和 `Directory.Build.props` 中的包名与 Publisher 值替换为 Partner Center 分配的身份。Store 会为上架包签名；直接从网站分发 MSIX 则需要受信任的代码签名证书。
+单项目 MSIX 发布命令为 `./build.ps1 -Task Package -Version 0.7.0`。提交 Microsoft Store 前，需要把 `Package.appxmanifest` 和 `Directory.Build.props` 中的包名与 Publisher 值替换为 Partner Center 分配的身份。Store 会为上架包签名；直接从网站分发 MSIX 则需要受信任的代码签名证书。
 
 计算回归测试使用一个无第三方测试框架依赖的控制台运行器，断言失败会返回非零退出码。不要用 `dotnet test` 替代上述 `dotnet run` 命令。
 

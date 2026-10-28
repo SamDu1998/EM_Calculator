@@ -1,7 +1,10 @@
 # Changelog
 
-## 0.6.0 — 2026-10-28
+## 0.7.0 — 2026-10-28
 
+- Add a uniform linear-array estimator for spacing, scan phase, aperture, and grating-lobe risk.
+
+## 0.6.0 — 2026-10-28
 - Add an initial rectangular microstrip patch sizing calculator with a TM₁₀ dimension schematic.
 
 ## 0.5.0 — 2026-10-28

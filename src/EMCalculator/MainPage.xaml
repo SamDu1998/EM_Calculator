@@ -21,6 +21,7 @@
             <NavigationViewItem x:Name="WavelengthNav" Tag="wavelength" Icon="World" IsTextScaleFactorEnabled="True" />
             <NavigationViewItemHeader x:Name="AntennaDesignHeader" />
             <NavigationViewItem x:Name="PatchNav" Tag="patch" Icon="World" IsTextScaleFactorEnabled="True" />
+            <NavigationViewItem x:Name="ArrayNav" Tag="array" Icon="AllApps" IsTextScaleFactorEnabled="True" />
             <NavigationViewItemHeader x:Name="StructuresHeader" />
             <NavigationViewItem x:Name="LineNav" Tag="line" Icon="Link" IsTextScaleFactorEnabled="True" />
             <NavigationViewItem x:Name="SiwNav" Tag="siw" Icon="AllApps" IsTextScaleFactorEnabled="True" />

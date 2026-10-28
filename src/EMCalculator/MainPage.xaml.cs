@@ -37,6 +37,7 @@ public sealed partial class MainPage : Page
     private int savedLineType;
     private SiwResult? lastSiw;
     private PatchAntennaResult? lastPatch;
+    private LinearArrayResult? lastArray;
 
     public MainPage()
     {
@@ -48,9 +49,12 @@ public sealed partial class MainPage : Page
 
     private string T(string zh, string en) => chinese ? zh : en;
 
-    private string PageSubtitle() => page == "patch"
-        ? T("TM₁₀ 矩形贴片初算；不含馈电与损耗修正。", "Initial TM10 patch sizing; feed and loss effects are not modeled.")
-        : T("输入参数，结果将实时更新。", "Results update as you enter parameters.");
+    private string PageSubtitle() => page switch
+    {
+        "patch" => T("TM₁₀ 矩形贴片初算；不含馈电与损耗修正。", "Initial TM10 patch sizing; feed and loss effects are not modeled."),
+        "array" => T("均匀线阵阵因子初算；不含单元方向图与互耦。", "Uniform linear-array estimate; element pattern and mutual coupling are not modeled."),
+        _ => T("输入参数，结果将实时更新。", "Results update as you enter parameters.")
+    };
 
     private void UpdateLanguage()
     {
@@ -60,6 +64,7 @@ public sealed partial class MainPage : Page
         WavelengthNav.Content = T("波长", "Wavelength");
         AntennaDesignHeader.Content = T("天线设计", "Antenna design");
         PatchNav.Content = T("矩形贴片初算", "Patch antenna");
+        ArrayNav.Content = T("均匀线阵初算", "Linear array");
         StructuresHeader.Content = T("馈电与导波结构", "Feeds & guided structures");
         LineNav.Content = T("传输线阻抗", "Transmission line");
         SiwNav.Content = T("SIW 通孔设计", "SIW via design");
@@ -179,6 +184,7 @@ public sealed partial class MainPage : Page
         primaryResultValue = null;
         lastSiw = null;
         lastPatch = null;
+        lastArray = null;
         isWideLayout = null;
 
         displayedPage = page == "line" ? $"line:{savedLineType}" : page;
@@ -187,6 +193,7 @@ public sealed partial class MainPage : Page
             "aperture" => T("口径效率", "Aperture efficiency"),
             "wavelength" => T("波长", "Wavelength"),
             "patch" => T("矩形微带贴片初算", "Rectangular patch sizing"),
+            "array" => T("均匀线阵初算", "Uniform linear array"),
             "line" => T("传输线阻抗", "Transmission line"),
             "siw" => T("SIW 通孔设计", "SIW via design"),
             _ => T("相对带宽", "Relative bandwidth")
@@ -237,6 +244,13 @@ public sealed partial class MainPage : Page
             Field("er", T("基板相对介电常数 εᵣ", "Substrate relative permittivity εᵣ"), "4.4");
             Field("height", T("基板厚度 h", "Substrate thickness h"), "1.6", length);
         }
+        else if (page == "array")
+        {
+            Field("f", T("工作频率 f₀", "Operating frequency f₀"), "10", freq, 3);
+            Field("elements", T("阵元数 N（2–32）", "Number of elements N (2–32)"), "8");
+            Field("spacing", T("阵元间距 d/λ₀", "Element spacing d/λ₀"), "0.5");
+            Field("scan", T("扫描角 θ₀（相对阵列法线，°）", "Scan angle θ₀ (from broadside, °)"), "0");
+        }
         else if (page == "siw")
         {
             Field("f", T("工作频率", "Operating frequency"), "10", freq, 3);
@@ -278,7 +292,7 @@ public sealed partial class MainPage : Page
         pageLayout.Children.Add(inputCard);
         pageLayout.Children.Add(resultCard);
 
-        if (page is "line" or "siw" or "patch")
+        if (page is "line" or "siw" or "patch" or "array")
         {
             diagramCanvas = new Canvas
             {
@@ -465,6 +479,9 @@ public sealed partial class MainPage : Page
         "outer_not_greater_than_inner" => T("外导体内径必须大于内导体直径。", "Outer conductor inner diameter must exceed the inner conductor diameter."),
         "width_too_small_for_vias" => T("波导宽度对推荐通孔尺寸过小。", "Waveguide width is too small for the recommended vias."),
         "patch_length_not_positive" => T("当前参数无法得到正的贴片长度，请检查频率和基板参数。", "These inputs produce a non-positive patch length; check the frequency and substrate values."),
+        "element_count_invalid" => T("阵元数必须是 2 到 32 之间的整数。", "Element count must be an integer from 2 through 32."),
+        "spacing_ratio_not_positive" => T("阵元间距 d/λ₀ 必须大于零。", "Element spacing d/λ₀ must be positive."),
+        "scan_angle_out_of_range" => T("扫描角必须在 −90° 到 90° 之间。", "Scan angle must be between −90° and 90°."),
         "out_of_range" => T("输入超出计算范围。", "Inputs are outside the calculation range."),
         _ => T("请输入有效数字，可使用科学计数法。", "Enter valid numbers; scientific notation is supported.")
     };
@@ -476,6 +493,7 @@ public sealed partial class MainPage : Page
         outputCount = 0;
         lastSiw = null;
         lastPatch = null;
+        lastArray = null;
 
         try
         {
@@ -511,6 +529,15 @@ public sealed partial class MainPage : Page
                     Output(T("等效电长度 Leff", "Effective electrical length Leff"), lastPatch.EffectiveLengthM * 1000, "mm");
                     if (lastPatch.OutsideValidatedRange)
                         Warn(T("宽高比或介电常数超出本初算模型的常用范围；结果仅作初始尺寸参考。", "The width-to-height ratio or permittivity is outside the usual range for this preliminary model; treat the result as an initial estimate."));
+                    break;
+                case "array":
+                    lastArray = Calculations.UniformLinearArray(Value("f"), Value("elements"), Value("spacing"), Value("scan"));
+                    Output(T("阵列总长度 (N−1)d", "Array aperture length (N−1)d"), lastArray.ApertureLengthM * 1000, "mm");
+                    Output(T("物理阵元间距 d", "Physical element spacing d"), lastArray.ElementSpacingM * 1000, "mm");
+                    Output(T("渐进相位步进 Δφ", "Progressive phase step Δφ"), lastArray.ProgressivePhaseDegrees, "°");
+                    Output(T("无栅瓣间距上限 d/λ₀", "Grating-lobe-free spacing limit d/λ₀"), lastArray.GratingLobeLimitSpacingRatio, "");
+                    if (lastArray.GratingLobesPossible)
+                        Warn(T("当前间距在该扫描角下可能产生栅瓣。", "This spacing may produce grating lobes at the selected scan angle."));
                     break;
                 case "siw":
                     lastSiw = Calculations.Siw(Value("f"), Value("er"), Value("width"));
@@ -597,6 +624,14 @@ public sealed partial class MainPage : Page
             diagramDescription.Text = $"{T("矩形贴片俯视图与横截面；TM₁₀ 初算，示意图非比例绘制。", "Rectangular patch top and cross-section; TM10 initial sizing, schematic not to scale.")} {parameters}";
             AutomationProperties.SetName(diagramCanvas, $"{T("矩形微带贴片尺寸示意图", "Rectangular microstrip patch dimension schematic")}. {parameters}");
         }
+        else if (page == "array")
+        {
+            string parameters = $"N = {FieldText("elements")}; f₀ = {FieldText("f")}; d/λ₀ = {FieldText("spacing")}; θ₀ = {FieldText("scan")}°";
+            if (lastArray != null)
+                parameters += $"; d = {Millimeters(lastArray.ElementSpacingM)} mm; (N−1)d = {Millimeters(lastArray.ApertureLengthM)} mm; Δφ = {lastArray.ProgressivePhaseDegrees.ToString("G5", CultureInfo.InvariantCulture)}°";
+            diagramDescription.Text = $"{T("均匀线阵示意图；扫描角相对阵列法线，非比例绘制。", "Uniform linear-array schematic; scan angle is from broadside, not to scale.")} {parameters}";
+            AutomationProperties.SetName(diagramCanvas, $"{T("均匀线阵与扫描方向示意图", "Uniform linear-array and scan direction schematic")}. {parameters}");
+        }
     }
 
     private static string Millimeters(double meters) => (meters * 1000).ToString("G5", CultureInfo.InvariantCulture);
@@ -623,8 +658,64 @@ public sealed partial class MainPage : Page
             DrawSiwDiagram(width, height, metal, dielectric, outline, primary, secondary);
         else if (page == "patch")
             DrawPatchAntennaDiagram(width, height, metal, dielectric, outline, primary, secondary);
+        else if (page == "array")
+            DrawLinearArrayDiagram(width, height, metal, outline, primary, secondary);
         else
             DrawTransmissionLineDiagram(width, height, metal, dielectric, outline, primary, secondary);
+    }
+
+    private void DrawLinearArrayDiagram(double width, double height, Brush metal, Brush outline, Brush primary, Brush secondary)
+    {
+        int count = lastArray?.ElementCount ?? ElementCountForDiagram();
+        double left = width * 0.12;
+        double right = width * 0.88;
+        double arrayY = height * 0.66;
+        double interval = (right - left) / (count - 1);
+        double radius = Math.Clamp(interval * 0.28, 1.6, 7);
+
+        for (int i = 0; i < count; i++)
+        {
+            double x = left + i * interval;
+            AddEllipse(x - radius, arrayY - radius, radius * 2, radius * 2, metal, outline);
+        }
+        AddLine(left, arrayY + 2, right, arrayY + 2, secondary, 1);
+
+        if (count > 1)
+            AddDimensionHorizontal(left, left + interval, arrayY + 25, "d", secondary);
+        AddLabel("N = " + count.ToString(CultureInfo.InvariantCulture), left, arrayY + 48, right - left, 14, primary);
+
+        double center = (left + right) / 2;
+        double broadsideTop = height * 0.12;
+        AddLine(center, arrayY - 8, center, broadsideTop, secondary, 1);
+        AddLabel(T("阵列法线", "Broadside"), center - 42, broadsideTop - 21, 84, 12, secondary);
+
+        double scanAngle = lastArray?.ScanAngleDegrees ?? ParseForDiagram("scan", 0);
+        double radians = scanAngle * Math.PI / 180;
+        double beamLength = height * 0.36;
+        double tipX = center + beamLength * Math.Sin(radians);
+        double tipY = arrayY - beamLength * Math.Cos(radians);
+        AddLine(center, arrayY - 8, tipX, tipY, primary, 2);
+        double beamDirection = radians - Math.PI / 2;
+        AddLine(tipX, tipY, tipX - 9 * Math.Cos(beamDirection + Math.PI / 6), tipY - 9 * Math.Sin(beamDirection + Math.PI / 6), primary, 2);
+        AddLine(tipX, tipY, tipX - 9 * Math.Cos(beamDirection - Math.PI / 6), tipY - 9 * Math.Sin(beamDirection - Math.PI / 6), primary, 2);
+        AddLabel("θ₀", tipX - 20, tipY - 24, 40, 14, primary);
+    }
+
+    private double ParseForDiagram(string key, double fallback)
+    {
+        try { return Value(key); }
+        catch (CalculationException) { return fallback; }
+    }
+
+    private int ElementCountForDiagram()
+    {
+        if (fields.TryGetValue("elements", out var field)
+            && double.TryParse(field.input.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out double count)
+            && double.IsFinite(count)
+            && count == Math.Truncate(count)
+            && count is >= 2 and <= 32)
+            return (int)count;
+        return 8;
     }
 
     private void DrawPatchAntennaDiagram(double width, double height, Brush metal, Brush dielectric, Brush outline, Brush primary, Brush secondary)
