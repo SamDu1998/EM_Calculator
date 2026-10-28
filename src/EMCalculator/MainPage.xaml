@@ -25,6 +25,8 @@
             <NavigationViewItemHeader x:Name="StructuresHeader" />
             <NavigationViewItem x:Name="LineNav" Tag="line" Icon="Link" IsTextScaleFactorEnabled="True" />
             <NavigationViewItem x:Name="SiwNav" Tag="siw" Icon="AllApps" IsTextScaleFactorEnabled="True" />
+            <NavigationViewItemHeader x:Name="SystemHeader" />
+            <NavigationViewItem x:Name="FriisNav" Tag="friis" Icon="Globe" IsTextScaleFactorEnabled="True" />
         </NavigationView.MenuItems>
         <NavigationView.PaneFooter>
             <Button x:Name="LanguageButton" Click="Language_Click" Margin="12,4,12,12" IsTextScaleFactorEnabled="True" />

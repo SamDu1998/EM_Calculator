@@ -30,14 +30,18 @@ public sealed partial class MainPage : Page
     private readonly List<TextBlock> sectionHeadings = [];
     private int outputCount;
     private ComboBox? lineType;
+    private ComboBox? lineMode;
     private bool building;
     private bool? isWideLayout;
     private string? displayedPage;
     private readonly Dictionary<string, Dictionary<string, (string text, int unit)>> savedInputs = new();
     private int savedLineType;
+    private int savedLineMode;
     private SiwResult? lastSiw;
     private PatchAntennaResult? lastPatch;
     private LinearArrayResult? lastArray;
+    private LineSynthesisResult? lastLineSynthesis;
+    private FriisLinkResult? lastFriis;
 
     public MainPage()
     {
@@ -53,6 +57,8 @@ public sealed partial class MainPage : Page
     {
         "patch" => T("TM₁₀ 矩形贴片初算；不含馈电与损耗修正。", "Initial TM10 patch sizing; feed and loss effects are not modeled."),
         "array" => T("均匀线阵阵因子初算；不含单元方向图与互耦。", "Uniform linear-array estimate; element pattern and mutual coupling are not modeled."),
+        "line" when savedLineMode == 1 => T("按目标阻抗综合导体尺寸；线宽/同轴内径由模型反求。", "Synthesize the conductor dimension for a target impedance using the selected line model."),
+        "friis" => T("自由空间视距链路估算；不含多径、遮挡或环境损耗。", "Free-space line-of-sight estimate; multipath, obstruction, and environmental losses are not modeled."),
         _ => T("输入参数，结果将实时更新。", "Results update as you enter parameters.")
     };
 
@@ -68,6 +74,8 @@ public sealed partial class MainPage : Page
         StructuresHeader.Content = T("馈电与导波结构", "Feeds & guided structures");
         LineNav.Content = T("传输线阻抗", "Transmission line");
         SiwNav.Content = T("SIW 通孔设计", "SIW via design");
+        SystemHeader.Content = T("系统估算", "System estimates");
+        FriisNav.Content = T("Friis 链路预算", "Friis link budget");
         LanguageButton.Content = chinese ? "English" : "中文";
     }
 
@@ -175,6 +183,7 @@ public sealed partial class MainPage : Page
         ContentPanel.Children.Clear();
         sectionHeadings.Clear();
         lineType = null;
+        lineMode = null;
         pageLayout = null;
         inputCard = null;
         resultCard = null;
@@ -185,15 +194,18 @@ public sealed partial class MainPage : Page
         lastSiw = null;
         lastPatch = null;
         lastArray = null;
+        lastLineSynthesis = null;
+        lastFriis = null;
         isWideLayout = null;
 
-        displayedPage = page == "line" ? $"line:{savedLineType}" : page;
+        displayedPage = page == "line" ? $"line:{savedLineType}:{savedLineMode}" : page;
         string title = page switch
         {
             "aperture" => T("口径效率", "Aperture efficiency"),
             "wavelength" => T("波长", "Wavelength"),
             "patch" => T("矩形微带贴片初算", "Rectangular patch sizing"),
             "array" => T("均匀线阵初算", "Uniform linear array"),
+            "friis" => T("Friis 链路预算", "Friis link budget"),
             "line" => T("传输线阻抗", "Transmission line"),
             "siw" => T("SIW 通孔设计", "SIW via design"),
             _ => T("相对带宽", "Relative bandwidth")
@@ -221,6 +233,7 @@ public sealed partial class MainPage : Page
         results = new StackPanel { Spacing = 12 };
         string[] freq = ["Hz", "kHz", "MHz", "GHz"];
         string[] length = ["mm", "µm", "mil"];
+        string[] distance = ["m", "km"];
 
         if (page == "bandwidth")
         {
@@ -251,13 +264,23 @@ public sealed partial class MainPage : Page
             Field("spacing", T("阵元间距 d/λ₀", "Element spacing d/λ₀"), "0.5");
             Field("scan", T("扫描角 θ₀（相对阵列法线，°）", "Scan angle θ₀ (from broadside, °)"), "0");
         }
+        else if (page == "friis")
+        {
+            Field("f", T("频率 f₀", "Frequency f₀"), "2.4", freq, 3);
+            Field("distance", T("收发距离 R", "Tx/Rx distance R"), "1", distance);
+            Field("txPower", T("发射功率 Pt", "Transmit power Pt"), "20");
+            Field("txGain", T("发射天线增益 Gt", "Transmit antenna gain Gt"), "2");
+            Field("rxGain", T("接收天线增益 Gr", "Receive antenna gain Gr"), "2");
+            Field("loss", T("其他系统损耗 L", "Other system losses L"), "0");
+            Field("sensitivity", T("接收灵敏度", "Receiver sensitivity"), "-90");
+        }
         else if (page == "siw")
         {
             Field("f", T("工作频率", "Operating frequency"), "10", freq, 3);
             Field("er", T("相对介电常数 εᵣ", "Relative permittivity εᵣ"), "3.38");
             Field("width", T("通孔中心间宽度 a", "Via center-to-center width a"), "13", length);
         }
-        else
+        else if (page == "line")
         {
             lineType = new ComboBox
             {
@@ -269,11 +292,26 @@ public sealed partial class MainPage : Page
             lineType.SelectedIndex = savedLineType;
             inputs.Children.Add(lineType);
 
+            lineMode = new ComboBox
+            {
+                Header = T("计算方式", "Operation"),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                IsTextScaleFactorEnabled = true
+            };
+            lineMode.Items.Add(T("计算阻抗", "Calculate impedance"));
+            lineMode.Items.Add(T("综合尺寸", "Synthesize dimension"));
+            lineMode.SelectedIndex = savedLineMode;
+            inputs.Children.Add(lineMode);
+
             string width = savedLineType switch { 0 => "3.06", 3 => "1", _ => "0.5" };
             string height = savedLineType switch { 0 => "1.6", 3 => "3.490343", _ => "0.635" };
             string er = savedLineType switch { 0 => "4.4", 3 => "2.25", _ => "9.8" };
-            Field("width", T("线宽 W / 内导体直径 d", "Width W / inner diameter d"), width, length);
-            Field("gap", T("间隙 S（CPW / GCPW）", "Gap S (CPW / GCPW)"), "0.25", length);
+            if (savedLineMode == 0)
+                Field("width", T("线宽 W / 内导体直径 d", "Width W / inner diameter d"), width, length);
+            else
+                Field("targetZ0", T("目标特性阻抗 Z₀", "Target characteristic impedance Z₀"), "50");
+            if (savedLineType is 1 or 2)
+                Field("gap", T("间隙 S", "Gap S"), "0.25", length);
             Field("height", T("基板厚度 h / 外导体内径 D", "Substrate height h / outer conductor inner diameter D"), height, length);
             Field("er", T("相对介电常数 εᵣ", "Relative permittivity εᵣ"), er);
 
@@ -284,6 +322,13 @@ public sealed partial class MainPage : Page
                 savedLineType = lineType.SelectedIndex;
                 RenderPage(false);
             };
+            lineMode.SelectionChanged += (_, _) =>
+            {
+                if (building || lineMode == null) return;
+                SaveInputs();
+                savedLineMode = lineMode.SelectedIndex;
+                RenderPage(false);
+            };
         }
 
         inputCard = SectionCard(T("输入参数", "Parameters"), inputs);
@@ -292,7 +337,7 @@ public sealed partial class MainPage : Page
         pageLayout.Children.Add(inputCard);
         pageLayout.Children.Add(resultCard);
 
-        if (page is "line" or "siw" or "patch" or "array")
+        if (page is "line" or "siw" or "patch" or "array" or "friis")
         {
             diagramCanvas = new Canvas
             {
@@ -372,15 +417,20 @@ public sealed partial class MainPage : Page
 
     private void UpdateLineFields()
     {
-        if (lineType == null || !fields.ContainsKey("gap")) return;
+        if (lineType == null || lineMode == null || !fields.ContainsKey("height")) return;
         int type = lineType.SelectedIndex;
-        fields["width"].input.Header = type == 3
-            ? T("内导体直径 d", "Inner conductor diameter d")
-            : T("线宽 W", "Conductor width W");
+        bool synthesize = lineMode.SelectedIndex == 1;
+        if (synthesize && fields.TryGetValue("targetZ0", out var targetField))
+            targetField.input.Header = T("目标特性阻抗 Z₀", "Target characteristic impedance Z₀");
+        if (!synthesize && fields.TryGetValue("width", out var widthField))
+            widthField.input.Header = type == (int)LineType.Coaxial
+                ? T("内导体直径 d", "Inner conductor diameter d")
+                : T("线宽 W", "Conductor width W");
         fields["height"].input.Header = type == 3
             ? T("外导体内径 D", "Outer conductor inner diameter D")
             : T("基板厚度 h", "Substrate height h");
-        ((Grid)fields["gap"].input.Parent).Visibility = type is 1 or 2 ? Visibility.Visible : Visibility.Collapsed;
+        if (fields.TryGetValue("gap", out var gapField))
+            ((Grid)gapField.input.Parent).Visibility = type is 1 or 2 ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private double Value(string key)
@@ -476,9 +526,16 @@ public sealed partial class MainPage : Page
         "height_not_positive" => T("基板厚度必须大于零。", "Substrate height must be positive."),
         "gap_not_positive" => T("间隙必须大于零。", "Gap must be positive."),
         "inner_not_positive" => T("内导体直径必须大于零。", "Inner conductor diameter must be positive."),
+        "outer_not_positive" => T("外导体内径必须大于零。", "Outer conductor inner diameter must be positive."),
         "outer_not_greater_than_inner" => T("外导体内径必须大于内导体直径。", "Outer conductor inner diameter must exceed the inner conductor diameter."),
         "width_too_small_for_vias" => T("波导宽度对推荐通孔尺寸过小。", "Waveguide width is too small for the recommended vias."),
         "patch_length_not_positive" => T("当前参数无法得到正的贴片长度，请检查频率和基板参数。", "These inputs produce a non-positive patch length; check the frequency and substrate values."),
+        "target_impedance_not_positive" => T("目标特性阻抗必须大于零。", "Target characteristic impedance must be positive."),
+        "target_impedance_unreachable" => T("目标阻抗超出当前结构与模型范围可实现的范围。", "The target impedance is outside the range achievable by this geometry and model."),
+        "distance_not_positive" => T("收发距离必须大于零。", "Link distance must be positive."),
+        "transmit_power_not_finite" => T("请输入有效的发射功率。", "Enter a finite transmit power."),
+        "system_loss_invalid" => T("其他系统损耗必须是大于或等于零的有效数值。", "System losses must be a finite non-negative value."),
+        "sensitivity_not_finite" => T("请输入有效的接收灵敏度。", "Enter a finite receiver sensitivity."),
         "element_count_invalid" => T("阵元数必须是 2 到 32 之间的整数。", "Element count must be an integer from 2 through 32."),
         "spacing_ratio_not_positive" => T("阵元间距 d/λ₀ 必须大于零。", "Element spacing d/λ₀ must be positive."),
         "scan_angle_out_of_range" => T("扫描角必须在 −90° 到 90° 之间。", "Scan angle must be between −90° and 90°."),
@@ -494,6 +551,8 @@ public sealed partial class MainPage : Page
         lastSiw = null;
         lastPatch = null;
         lastArray = null;
+        lastLineSynthesis = null;
+        lastFriis = null;
 
         try
         {
@@ -547,6 +606,9 @@ public sealed partial class MainPage : Page
                     FrequencyOutput(T("截止频率", "Cutoff frequency"), lastSiw.CutoffFrequencyHz);
                     if (lastSiw.BelowCutoff) Warn(T("工作频率不高于截止频率。", "Operating frequency is at or below cutoff."));
                     break;
+                case "friis":
+                    CalculateFriis();
+                    break;
                 case "line":
                     CalculateLine();
                     break;
@@ -571,8 +633,27 @@ public sealed partial class MainPage : Page
 
     private void CalculateLine()
     {
-        double width = Value("width"), height = Value("height"), er = Value("er");
         var type = (LineType)savedLineType;
+        double height = Value("height"), er = Value("er");
+        if (savedLineMode == 1)
+        {
+            double target = Value("targetZ0");
+            double gap = type is LineType.Cpw or LineType.Gcpw ? Value("gap") : 0;
+            lastLineSynthesis = Calculations.SynthesizeLineDimension(target, height, er, type, gap);
+            string dimensionLabel = type == LineType.Coaxial
+                ? T("综合内导体直径 d", "Synthesized inner conductor diameter d")
+                : T("综合线宽 W", "Synthesized conductor width W");
+            Output(dimensionLabel, lastLineSynthesis.DimensionM * 1000, "mm");
+            Output(T("目标阻抗 Z₀", "Target impedance Z₀"), target, "Ω");
+            Output(T("回算阻抗 Z₀", "Recalculated impedance Z₀"), lastLineSynthesis.Z0Ohm, "Ω");
+            Output(T("有效介电常数", "Effective permittivity"), lastLineSynthesis.EpsilonEff, "");
+            Output(T("相速度", "Phase velocity"), lastLineSynthesis.PhaseVelocityMPerS, "m/s");
+            if (lastLineSynthesis.OutsideValidatedRange)
+                Warn(T("输入超出模型验证范围：0.01 ≤ W/h ≤ 100，εᵣ ≤ 128。", "Outside the validated range: 0.01 ≤ W/h ≤ 100, εᵣ ≤ 128."));
+            return;
+        }
+
+        double width = Value("width");
         LineResult line = type switch
         {
             LineType.Microstrip => Calculations.Microstrip(width, height, er),
@@ -583,6 +664,18 @@ public sealed partial class MainPage : Page
         Output(T("有效介电常数", "Effective permittivity"), line.EpsilonEff, "");
         Output(T("相速度", "Phase velocity"), line.PhaseVelocityMPerS, "m/s");
         if (line.OutsideValidatedRange) Warn(T("输入超出模型验证范围：0.01 ≤ W/h ≤ 100，εᵣ ≤ 128。", "Outside the validated range: 0.01 ≤ W/h ≤ 100, εᵣ ≤ 128."));
+    }
+
+    private void CalculateFriis()
+    {
+        lastFriis = Calculations.FriisLinkBudget(Value("f"), Value("distance"), Value("txPower"), Value("txGain"),
+            Value("rxGain"), Value("loss"), Value("sensitivity"));
+        Output(T("接收功率 Pr", "Received power Pr"), lastFriis.ReceivedPowerDbm, "dBm");
+        Output(T("自由空间路径损耗 Lfs", "Free-space path loss Lfs"), lastFriis.FreeSpacePathLossDb, "dB");
+        Output(T("链路余量", "Link margin"), lastFriis.LinkMarginDb, "dB");
+        Output(T("自由空间波长 λ₀", "Free-space wavelength λ₀"), lastFriis.WavelengthM * 1000, "mm");
+        if (lastFriis.BelowSensitivity)
+            Warn(T("接收功率低于接收灵敏度。", "Received power is below receiver sensitivity."));
     }
 
     private void UpdateStructureDetails()
@@ -599,14 +692,28 @@ public sealed partial class MainPage : Page
                 2 => "GCPW",
                 _ => "Coaxial"
             };
-            string parameters = type switch
+            string parameters;
+            if (savedLineMode == 0)
             {
-                0 => $"W = {FieldText("width")}; h = {FieldText("height")}; εᵣ = {FieldText("er")}",
-                1 or 2 => $"W = {FieldText("width")}; S = {FieldText("gap")}; h = {FieldText("height")}; εᵣ = {FieldText("er")}",
-                _ => $"d = {FieldText("width")}; D = {FieldText("height")}; εᵣ = {FieldText("er") }"
-            };
+                parameters = type switch
+                {
+                    0 => $"W = {FieldText("width")}; h = {FieldText("height")}; εᵣ = {FieldText("er")}",
+                    1 or 2 => $"W = {FieldText("width")}; S = {FieldText("gap")}; h = {FieldText("height")}; εᵣ = {FieldText("er")}",
+                    _ => $"d = {FieldText("width")}; D = {FieldText("height")}; εᵣ = {FieldText("er") }"
+                };
+            }
+            else
+            {
+                parameters = $"Z₀ = {FieldText("targetZ0")}; h/D = {FieldText("height")}; εᵣ = {FieldText("er")}";
+                if (type is 1 or 2) parameters += $"; S = {FieldText("gap")}";
+                if (lastLineSynthesis != null)
+                {
+                    string dimension = type == (int)LineType.Coaxial ? "d" : "W";
+                    parameters += $"; {dimension} = {Millimeters(lastLineSynthesis.DimensionM)} mm; Z₀ = {lastLineSynthesis.Z0Ohm.ToString("G5", CultureInfo.InvariantCulture)} Ω";
+                }
+            }
             diagramDescription.Text = $"{name} · {T("结构示意，非比例绘制。", "schematic, not to scale.")} {parameters}";
-            AutomationProperties.SetName(diagramCanvas, $"{name} {T("传输线横截面示意图", "transmission-line cross-section schematic")}. {parameters}");
+            AutomationProperties.SetName(diagramCanvas, $"{name} {T("传输线结构示意图", "transmission-line schematic")}. {parameters}");
         }
         else if (page == "siw")
         {
@@ -631,6 +738,14 @@ public sealed partial class MainPage : Page
                 parameters += $"; d = {Millimeters(lastArray.ElementSpacingM)} mm; (N−1)d = {Millimeters(lastArray.ApertureLengthM)} mm; Δφ = {lastArray.ProgressivePhaseDegrees.ToString("G5", CultureInfo.InvariantCulture)}°";
             diagramDescription.Text = $"{T("均匀线阵示意图；扫描角相对阵列法线，非比例绘制。", "Uniform linear-array schematic; scan angle is from broadside, not to scale.")} {parameters}";
             AutomationProperties.SetName(diagramCanvas, $"{T("均匀线阵与扫描方向示意图", "Uniform linear-array and scan direction schematic")}. {parameters}");
+        }
+        else if (page == "friis")
+        {
+            string parameters = $"f₀ = {FieldText("f")}; R = {FieldText("distance")}; Pt = {FieldText("txPower")} dBm; Gt/Gr = {FieldText("txGain")}/{FieldText("rxGain")} dBi; L = {FieldText("loss")} dB";
+            if (lastFriis != null)
+                parameters += $"; Pr = {lastFriis.ReceivedPowerDbm.ToString("G5", CultureInfo.InvariantCulture)} dBm; Margin = {lastFriis.LinkMarginDb.ToString("G5", CultureInfo.InvariantCulture)} dB";
+            diagramDescription.Text = $"{T("Friis 自由空间视距链路示意。", "Friis free-space line-of-sight link schematic.")} {parameters}";
+            AutomationProperties.SetName(diagramCanvas, $"{T("发射端到接收端的链路示意图", "Transmitter-to-receiver link schematic")}. {parameters}");
         }
     }
 
@@ -660,6 +775,8 @@ public sealed partial class MainPage : Page
             DrawPatchAntennaDiagram(width, height, metal, dielectric, outline, primary, secondary);
         else if (page == "array")
             DrawLinearArrayDiagram(width, height, metal, outline, primary, secondary);
+        else if (page == "friis")
+            DrawFriisDiagram(width, height, metal, outline, primary, secondary);
         else
             DrawTransmissionLineDiagram(width, height, metal, dielectric, outline, primary, secondary);
     }
@@ -716,6 +833,28 @@ public sealed partial class MainPage : Page
             && count is >= 2 and <= 32)
             return (int)count;
         return 8;
+    }
+
+    private void DrawFriisDiagram(double width, double height, Brush conductor, Brush outline, Brush primary, Brush secondary)
+    {
+        double txX = width * 0.22;
+        double rxX = width * 0.78;
+        double centerY = height * 0.48;
+
+        AddLine(txX, centerY - 30, txX, centerY + 20, conductor, 4);
+        AddLine(txX - 13, centerY - 30, txX + 13, centerY - 30, conductor, 3);
+        AddEllipse(txX - 5, centerY - 5, 10, 10, conductor, outline);
+        AddLine(rxX, centerY - 30, rxX, centerY + 20, conductor, 4);
+        AddLine(rxX - 13, centerY - 30, rxX + 13, centerY - 30, conductor, 3);
+        AddEllipse(rxX - 5, centerY - 5, 10, 10, conductor, outline);
+
+        AddLine(txX + 22, centerY, rxX - 22, centerY, secondary, 1.75);
+        AddLine(rxX - 22, centerY, rxX - 31, centerY - 5, secondary, 1.75);
+        AddLine(rxX - 22, centerY, rxX - 31, centerY + 5, secondary, 1.75);
+        AddLabel(T("发射端 Tx", "Transmitter Tx"), txX - 42, centerY + 25, 84, 13, primary);
+        AddLabel(T("接收端 Rx", "Receiver Rx"), rxX - 42, centerY + 25, 84, 13, primary);
+        AddLabel(T("自由空间传播", "Free-space path"), width * 0.36, centerY - 62, width * 0.28, 14, secondary);
+        AddDimensionHorizontal(txX, rxX, centerY + 67, "R", secondary);
     }
 
     private void DrawPatchAntennaDiagram(double width, double height, Brush metal, Brush dielectric, Brush outline, Brush primary, Brush secondary)

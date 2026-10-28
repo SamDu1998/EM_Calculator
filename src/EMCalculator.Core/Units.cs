@@ -8,7 +8,7 @@ public static class Units
     {
         null or "" or "Hz" or "m" or "m²" => 1,
         "kHz" => 1e3, "MHz" => 1e6, "GHz" => 1e9,
-        "mm" => 1e-3, "µm" => 1e-6, "mil" => 25.4e-6,
+        "km" => 1e3, "cm" => 1e-2, "mm" => 1e-3, "µm" => 1e-6, "mil" => 25.4e-6,
         "cm²" => 1e-4,
         _ => throw new ArgumentException("Unknown unit.", nameof(unit))
     };

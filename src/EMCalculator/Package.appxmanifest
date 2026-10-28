@@ -5,7 +5,7 @@
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   IgnorableNamespaces="uap rescap">
   <!-- Replace the identity with the values assigned to the app in Partner Center before Store submission. -->
-  <Identity Name="EMCalculator" Publisher="CN=EM Calculator Development" Version="0.7.0.0" ProcessorArchitecture="x64" />
+  <Identity Name="EMCalculator" Publisher="CN=EM Calculator Development" Version="0.8.0.0" ProcessorArchitecture="x64" />
   <Properties>
     <DisplayName>EM Calculator</DisplayName>
     <PublisherDisplayName>Sam</PublisherDisplayName>

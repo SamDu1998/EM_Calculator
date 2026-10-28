@@ -1,9 +1,10 @@
 # Changelog
 
-## Unreleased
+## 0.8.0 — 2026-10-28
 
-- Add numerical use-case fixtures and invalid/boundary checks for patch and linear-array calculations.
-- Run the regression test runner before producing an MSIX package.
+- Add target-impedance synthesis for Microstrip, CPW, GCPW, and Coaxial dimensions.
+- Add Friis free-space link-budget estimates for received power and link margin.
+- Require regression tests to pass before generating an MSIX package.
 
 ## 0.7.0 — 2026-10-28
 

@@ -499,5 +499,111 @@
         "gratingLobesPossible": false
       }
     }
+  ],
+  "friisLinkBudget": [
+    {
+      "name": "ISM_2p4GHz_1km",
+      "frequencyHz": 2400000000.0,
+      "distanceM": 1000.0,
+      "transmitPowerDbm": 20.0,
+      "transmitGainDbi": 2.0,
+      "receiveGainDbi": 2.0,
+      "systemLossDb": 3.0,
+      "receiverSensitivityDbm": -90.0,
+      "expected": {
+        "wavelengthM": 0.12491352416666666,
+        "freeSpacePathLossDb": 100.05200805611548,
+        "receivedPowerDbm": -79.05200805611548,
+        "linkMarginDb": 10.947991943884517,
+        "belowSensitivity": false
+      }
+    },
+    {
+      "name": "10GHz_100m_strong_link",
+      "frequencyHz": 10000000000.0,
+      "distanceM": 100.0,
+      "transmitPowerDbm": 30.0,
+      "transmitGainDbi": 20.0,
+      "receiveGainDbi": 15.0,
+      "systemLossDb": 2.0,
+      "receiverSensitivityDbm": -80.0,
+      "expected": {
+        "wavelengthM": 0.0299792458,
+        "freeSpacePathLossDb": 92.44778322188341,
+        "receivedPowerDbm": -29.447783221883412,
+        "linkMarginDb": 50.55221677811659,
+        "belowSensitivity": false
+      }
+    },
+    {
+      "name": "subGHz_below_sensitivity",
+      "frequencyHz": 915000000.0,
+      "distanceM": 10000.0,
+      "transmitPowerDbm": 10.0,
+      "transmitGainDbi": 0.0,
+      "receiveGainDbi": 0.0,
+      "systemLossDb": 4.0,
+      "receiverSensitivityDbm": -100.0,
+      "expected": {
+        "wavelengthM": 0.32764203060109287,
+        "freeSpacePathLossDb": 111.6762051032124,
+        "receivedPowerDbm": -105.6762051032124,
+        "linkMarginDb": -5.676205103212396,
+        "belowSensitivity": true
+      }
+    }
+  ],
+  "friisLinkBudget": [
+    {
+      "name": "ISM_2p4GHz_1km",
+      "frequencyHz": 2400000000.0,
+      "distanceM": 1000.0,
+      "transmitPowerDbm": 20.0,
+      "transmitGainDbi": 2.0,
+      "receiveGainDbi": 2.0,
+      "systemLossDb": 3.0,
+      "receiverSensitivityDbm": -90.0,
+      "expected": {
+        "wavelengthM": 0.12491352416666666,
+        "freeSpacePathLossDb": 100.05200805611548,
+        "receivedPowerDbm": -79.05200805611548,
+        "linkMarginDb": 10.947991943884517,
+        "belowSensitivity": false
+      }
+    },
+    {
+      "name": "10GHz_100m_strong_link",
+      "frequencyHz": 10000000000.0,
+      "distanceM": 100.0,
+      "transmitPowerDbm": 30.0,
+      "transmitGainDbi": 20.0,
+      "receiveGainDbi": 15.0,
+      "systemLossDb": 2.0,
+      "receiverSensitivityDbm": -80.0,
+      "expected": {
+        "wavelengthM": 0.0299792458,
+        "freeSpacePathLossDb": 92.44778322188341,
+        "receivedPowerDbm": -29.447783221883412,
+        "linkMarginDb": 50.55221677811659,
+        "belowSensitivity": false
+      }
+    },
+    {
+      "name": "subGHz_below_sensitivity",
+      "frequencyHz": 915000000.0,
+      "distanceM": 10000.0,
+      "transmitPowerDbm": 10.0,
+      "transmitGainDbi": 0.0,
+      "receiveGainDbi": 0.0,
+      "systemLossDb": 4.0,
+      "receiverSensitivityDbm": -100.0,
+      "expected": {
+        "wavelengthM": 0.32764203060109287,
+        "freeSpacePathLossDb": 111.6762051032124,
+        "receivedPowerDbm": -105.6762051032124,
+        "linkMarginDb": -5.676205103212396,
+        "belowSensitivity": true
+      }
+    }
   ]
 }

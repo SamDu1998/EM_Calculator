@@ -12,6 +12,8 @@ public sealed record LineResult(double Z0Ohm, double EpsilonEff, double PhaseVel
 public sealed record SiwResult(double ViaDiameterM, double ViaPitchM, double EffectiveWidthM, double CutoffFrequencyHz, bool BelowCutoff);
 public sealed record PatchAntennaResult(double WidthM, double LengthM, double EpsilonEff, double LengthExtensionM, double EffectiveLengthM, bool OutsideValidatedRange);
 public sealed record LinearArrayResult(double WavelengthM, int ElementCount, double SpacingRatio, double ElementSpacingM, double ApertureLengthM, double ScanAngleDegrees, double ProgressivePhaseDegrees, double GratingLobeLimitSpacingRatio, bool GratingLobesPossible);
+public sealed record LineSynthesisResult(double DimensionM, double Z0Ohm, double EpsilonEff, double PhaseVelocityMPerS, bool OutsideValidatedRange);
+public sealed record FriisLinkResult(double WavelengthM, double FreeSpacePathLossDb, double ReceivedPowerDbm, double LinkMarginDb, bool BelowSensitivity);
 public enum LineType { Microstrip, Cpw, Gcpw, Coaxial }
 
 /// <summary>SI inputs. Quasi-static, lossless transmission-line models; zero conductor thickness.</summary>
@@ -101,6 +103,91 @@ public static class Calculations
         double gratingLobeLimit = 1 / (1 + Math.Abs(sinScan));
         bool gratingLobesPossible = spacingRatio >= gratingLobeLimit;
         return new(wavelength, count, spacingRatio, spacing, apertureLength, scanAngleDegrees, phaseDegrees, gratingLobeLimit, gratingLobesPossible);
+    }
+    // Solve the supported conductor dimension for a target impedance using the existing forward model.
+    public static LineSynthesisResult SynthesizeLineDimension(double targetZ0Ohm, double heightOrOuterDiameter, double er, LineType type, double gap = 0)
+    {
+        Positive(targetZ0Ohm, "target_impedance_not_positive");
+        Permittivity(er);
+
+        if (type == LineType.Coaxial)
+        {
+            Positive(heightOrOuterDiameter, "outer_not_positive");
+            double inner = Finite(heightOrOuterDiameter * Math.Exp(-targetZ0Ohm * Math.Sqrt(er) / 60));
+            if (inner <= 0 || inner >= heightOrOuterDiameter) throw new CalculationException("target_impedance_unreachable");
+            LineResult coax = Coaxial(inner, heightOrOuterDiameter, er);
+            return new(inner, coax.Z0Ohm, coax.EpsilonEff, coax.PhaseVelocityMPerS, coax.OutsideValidatedRange);
+        }
+
+        Positive(heightOrOuterDiameter, "height_not_positive");
+        if (type is LineType.Cpw or LineType.Gcpw) Positive(gap, "gap_not_positive");
+
+        LineResult Evaluate(double width) => type switch
+        {
+            LineType.Microstrip => Microstrip(width, heightOrOuterDiameter, er),
+            LineType.Cpw => Coplanar(width, gap, heightOrOuterDiameter, er),
+            LineType.Gcpw => Coplanar(width, gap, heightOrOuterDiameter, er, true),
+            _ => throw new CalculationException("out_of_range")
+        };
+
+        double lower = Finite(heightOrOuterDiameter * 0.01);
+        double maximumWidth = Finite(heightOrOuterDiameter * 100);
+        if (lower <= 0 || maximumWidth <= lower) throw new CalculationException("out_of_range");
+        LineResult lowResult = Evaluate(lower);
+        if (targetZ0Ohm > lowResult.Z0Ohm) throw new CalculationException("target_impedance_unreachable");
+        double upper = lower;
+        LineResult highResult = lowResult;
+        while (highResult.Z0Ohm > targetZ0Ohm && upper < maximumWidth)
+        {
+            double nextWidth = Math.Min(maximumWidth, upper * 2);
+            if (nextWidth <= upper) break;
+            try
+            {
+                highResult = Evaluate(nextWidth);
+                upper = nextWidth;
+            }
+            catch (CalculationException ex) when ((type is LineType.Cpw or LineType.Gcpw) && ex.Code == "out_of_range")
+            {
+                break;
+            }
+        }
+        if (targetZ0Ohm < highResult.Z0Ohm) throw new CalculationException("target_impedance_unreachable");
+        if (targetZ0Ohm == lowResult.Z0Ohm)
+            return new(lower, lowResult.Z0Ohm, lowResult.EpsilonEff, lowResult.PhaseVelocityMPerS, lowResult.OutsideValidatedRange);
+        if (targetZ0Ohm == highResult.Z0Ohm)
+            return new(upper, highResult.Z0Ohm, highResult.EpsilonEff, highResult.PhaseVelocityMPerS, highResult.OutsideValidatedRange);
+
+        double tolerance = Math.Max(1e-10, targetZ0Ohm * 1e-10);
+        double widthResult = lower + (upper - lower) / 2;
+        LineResult lineResult = Evaluate(widthResult);
+        for (int i = 0; i < 100; i++)
+        {
+            widthResult = lower + (upper - lower) / 2;
+            lineResult = Evaluate(widthResult);
+            if (Math.Abs(lineResult.Z0Ohm - targetZ0Ohm) <= tolerance || widthResult == lower || widthResult == upper)
+                break;
+            if (lineResult.Z0Ohm > targetZ0Ohm) lower = widthResult;
+            else upper = widthResult;
+        }
+        return new(widthResult, lineResult.Z0Ohm, lineResult.EpsilonEff, lineResult.PhaseVelocityMPerS, lineResult.OutsideValidatedRange);
+    }
+    // Friis free-space link estimate; powers are dBm/dB values, frequency Hz, distance meters.
+    public static FriisLinkResult FriisLinkBudget(double frequency, double distanceM, double transmitPowerDbm,
+        double transmitGainDbi, double receiveGainDbi, double systemLossDb, double receiverSensitivityDbm)
+    {
+        Positive(frequency, "frequency_not_positive");
+        Positive(distanceM, "distance_not_positive");
+        if (!double.IsFinite(transmitPowerDbm)) throw new CalculationException("transmit_power_not_finite");
+        if (!double.IsFinite(transmitGainDbi) || !double.IsFinite(receiveGainDbi)) throw new CalculationException("gain_not_finite");
+        if (!double.IsFinite(systemLossDb) || systemLossDb < 0) throw new CalculationException("system_loss_invalid");
+        if (!double.IsFinite(receiverSensitivityDbm)) throw new CalculationException("sensitivity_not_finite");
+
+        double wavelength = Finite(SpeedOfLight / frequency);
+        double pathLoss = Finite(20 * Math.Log10(4 * Math.PI) + 20 * Math.Log10(distanceM)
+            + 20 * Math.Log10(frequency) - 20 * Math.Log10(SpeedOfLight));
+        double receivedPower = Finite(transmitPowerDbm + transmitGainDbi + receiveGainDbi - systemLossDb - pathLoss);
+        double margin = Finite(receivedPower - receiverSensitivityDbm);
+        return new(wavelength, pathLoss, receivedPower, margin, margin < 0);
     }
     // Hammerstad–Jensen (1980), negligible conductor thickness.
     public static LineResult Microstrip(double width, double height, double er)
