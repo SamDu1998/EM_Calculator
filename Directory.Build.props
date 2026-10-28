@@ -1,9 +1,9 @@
 <Project>
   <PropertyGroup>
-    <Version>0.4.1</Version>
+    <Version>0.5.0</Version>
     <AppxPackageIdentityName>EMCalculator</AppxPackageIdentityName>
     <AppxPackagePublisher>CN=EM Calculator Development</AppxPackagePublisher>
-    <AppxPackageVersion>0.4.1.0</AppxPackageVersion>
+    <AppxPackageVersion>0.5.0.0</AppxPackageVersion>
     <Authors>Sam</Authors>
     <Product>EM Calculator</Product>
     <Description>Native Windows electromagnetic engineering calculator</Description>

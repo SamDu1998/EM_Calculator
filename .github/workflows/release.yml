@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to build, e.g. 0.4.1'
+        description: 'Version to build, e.g. 0.5.0'
         required: true
         type: string
 permissions:

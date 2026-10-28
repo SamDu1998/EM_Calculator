@@ -6,6 +6,9 @@
     xmlns:local="using:EMCalculator">
     <Application.Resources>
         <ResourceDictionary>
+            <Style TargetType="TextBlock">
+                <Setter Property="IsTextScaleFactorEnabled" Value="True" />
+            </Style>
             <Style x:Key="CalculatorCard" TargetType="Border">
                 <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
                 <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />

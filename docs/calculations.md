@@ -15,6 +15,8 @@ All public calculation functions live in `src/EMCalculator.Core/Calculations.cs`
 
 The speed of light is 299,792,458 m/s. Non-finite and invalid inputs are rejected; numerical overflow produces a range error.
 
+The WinUI pages include schematic cross-sections for the four transmission-line types and a top view of the SIW via fence. These drawings explain the geometry and label the current inputs; they are not to scale and do not replace the equations above.
+
 ## Verification
 
 Run `dotnet run --project tests/EMCalculator.Tests -c Release`.

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.0 — 2026-10-28
+
+- Add adaptive structure schematics for Microstrip, CPW, GCPW, Coaxial, and SIW via fences, with labels following current inputs.
+- Center the calculator content and switch between stacked and side-by-side parameter/result layouts as the window changes size.
+- Use compact navigation, responsive headings, DPI-aware startup dimensions, and Windows text scaling.
+- Include the package manifest only for MSIX builds so unpackaged app builds pass the Windows App SDK configuration check.
+
 ## 0.4.1 — 2026-10-27
 
 - Add a single-project MSIX package target for Windows-managed installation and uninstall.
