@@ -36,6 +36,7 @@ public sealed partial class MainPage : Page
     private readonly Dictionary<string, Dictionary<string, (string text, int unit)>> savedInputs = new();
     private int savedLineType;
     private SiwResult? lastSiw;
+    private PatchAntennaResult? lastPatch;
 
     public MainPage()
     {
@@ -47,11 +48,19 @@ public sealed partial class MainPage : Page
 
     private string T(string zh, string en) => chinese ? zh : en;
 
+    private string PageSubtitle() => page == "patch"
+        ? T("TM₁₀ 矩形贴片初算；不含馈电与损耗修正。", "Initial TM10 patch sizing; feed and loss effects are not modeled.")
+        : T("输入参数，结果将实时更新。", "Results update as you enter parameters.");
+
     private void UpdateLanguage()
     {
+        BasicsHeader.Content = T("基础估算", "Basic estimates");
         BandwidthNav.Content = T("相对带宽", "Bandwidth");
         ApertureNav.Content = T("口径效率", "Aperture efficiency");
         WavelengthNav.Content = T("波长", "Wavelength");
+        AntennaDesignHeader.Content = T("天线设计", "Antenna design");
+        PatchNav.Content = T("矩形贴片初算", "Patch antenna");
+        StructuresHeader.Content = T("馈电与导波结构", "Feeds & guided structures");
         LineNav.Content = T("传输线阻抗", "Transmission line");
         SiwNav.Content = T("SIW 通孔设计", "SIW via design");
         LanguageButton.Content = chinese ? "English" : "中文";
@@ -169,6 +178,7 @@ public sealed partial class MainPage : Page
         diagramDescription = null;
         primaryResultValue = null;
         lastSiw = null;
+        lastPatch = null;
         isWideLayout = null;
 
         displayedPage = page == "line" ? $"line:{savedLineType}" : page;
@@ -176,6 +186,7 @@ public sealed partial class MainPage : Page
         {
             "aperture" => T("口径效率", "Aperture efficiency"),
             "wavelength" => T("波长", "Wavelength"),
+            "patch" => T("矩形微带贴片初算", "Rectangular patch sizing"),
             "line" => T("传输线阻抗", "Transmission line"),
             "siw" => T("SIW 通孔设计", "SIW via design"),
             _ => T("相对带宽", "Relative bandwidth")
@@ -192,7 +203,7 @@ public sealed partial class MainPage : Page
         ContentPanel.Children.Add(pageTitle);
         ContentPanel.Children.Add(new TextBlock
         {
-            Text = T("输入参数，结果将实时更新。", "Results update as you enter parameters."),
+            Text = PageSubtitle(),
             Opacity = 0.72,
             Margin = new Thickness(0, -8, 0, 4),
             TextWrapping = TextWrapping.Wrap,
@@ -219,6 +230,12 @@ public sealed partial class MainPage : Page
         {
             Field("f", T("频率", "Frequency"), "2.4", freq, 3);
             Field("er", T("相对介电常数 εᵣ", "Relative permittivity εᵣ"), "1");
+        }
+        else if (page == "patch")
+        {
+            Field("f", T("目标谐振频率 f₀", "Target resonant frequency f₀"), "2.4", freq, 3);
+            Field("er", T("基板相对介电常数 εᵣ", "Substrate relative permittivity εᵣ"), "4.4");
+            Field("height", T("基板厚度 h", "Substrate thickness h"), "1.6", length);
         }
         else if (page == "siw")
         {
@@ -261,7 +278,7 @@ public sealed partial class MainPage : Page
         pageLayout.Children.Add(inputCard);
         pageLayout.Children.Add(resultCard);
 
-        if (page is "line" or "siw")
+        if (page is "line" or "siw" or "patch")
         {
             diagramCanvas = new Canvas
             {
@@ -447,6 +464,7 @@ public sealed partial class MainPage : Page
         "inner_not_positive" => T("内导体直径必须大于零。", "Inner conductor diameter must be positive."),
         "outer_not_greater_than_inner" => T("外导体内径必须大于内导体直径。", "Outer conductor inner diameter must exceed the inner conductor diameter."),
         "width_too_small_for_vias" => T("波导宽度对推荐通孔尺寸过小。", "Waveguide width is too small for the recommended vias."),
+        "patch_length_not_positive" => T("当前参数无法得到正的贴片长度，请检查频率和基板参数。", "These inputs produce a non-positive patch length; check the frequency and substrate values."),
         "out_of_range" => T("输入超出计算范围。", "Inputs are outside the calculation range."),
         _ => T("请输入有效数字，可使用科学计数法。", "Enter valid numbers; scientific notation is supported.")
     };
@@ -457,6 +475,7 @@ public sealed partial class MainPage : Page
         results.Children.Clear();
         outputCount = 0;
         lastSiw = null;
+        lastPatch = null;
 
         try
         {
@@ -482,6 +501,16 @@ public sealed partial class MainPage : Page
                     Output("λg / 2", wavelength.HalfLambdaGM, "m");
                     Output("λg / 4", wavelength.QuarterLambdaGM, "m");
                     Output(T("相速度", "Phase velocity"), wavelength.PhaseVelocityMPerS, "m/s");
+                    break;
+                case "patch":
+                    lastPatch = Calculations.RectangularPatch(Value("f"), Value("er"), Value("height"));
+                    Output(T("贴片长度 L（TM₁₀）", "Patch length L (TM10)"), lastPatch.LengthM * 1000, "mm");
+                    Output(T("贴片宽度 W", "Patch width W"), lastPatch.WidthM * 1000, "mm");
+                    Output(T("有效相对介电常数 εeff", "Effective relative permittivity εeff"), lastPatch.EpsilonEff, "");
+                    Output(T("单侧边缘延伸 ΔL", "Edge extension per side ΔL"), lastPatch.LengthExtensionM * 1000, "mm");
+                    Output(T("等效电长度 Leff", "Effective electrical length Leff"), lastPatch.EffectiveLengthM * 1000, "mm");
+                    if (lastPatch.OutsideValidatedRange)
+                        Warn(T("宽高比或介电常数超出本初算模型的常用范围；结果仅作初始尺寸参考。", "The width-to-height ratio or permittivity is outside the usual range for this preliminary model; treat the result as an initial estimate."));
                     break;
                 case "siw":
                     lastSiw = Calculations.Siw(Value("f"), Value("er"), Value("width"));
@@ -560,6 +589,14 @@ public sealed partial class MainPage : Page
             diagramDescription.Text = $"{T("SIW 通孔阵列俯视图；示意图非比例绘制。", "SIW via-fence top view; schematic not to scale.")} {parameters}";
             AutomationProperties.SetName(diagramCanvas, $"{T("SIW 通孔阵列俯视结构示意图", "SIW via-fence top-view schematic")}. {parameters}");
         }
+        else if (page == "patch")
+        {
+            string parameters = $"f₀ = {FieldText("f")}; εᵣ = {FieldText("er")}; h = {FieldText("height")}";
+            if (lastPatch != null)
+                parameters += $"; W = {Millimeters(lastPatch.WidthM)} mm; L = {Millimeters(lastPatch.LengthM)} mm; εeff = {lastPatch.EpsilonEff.ToString("G5", CultureInfo.InvariantCulture)}; ΔL = {Millimeters(lastPatch.LengthExtensionM)} mm";
+            diagramDescription.Text = $"{T("矩形贴片俯视图与横截面；TM₁₀ 初算，示意图非比例绘制。", "Rectangular patch top and cross-section; TM10 initial sizing, schematic not to scale.")} {parameters}";
+            AutomationProperties.SetName(diagramCanvas, $"{T("矩形微带贴片尺寸示意图", "Rectangular microstrip patch dimension schematic")}. {parameters}");
+        }
     }
 
     private static string Millimeters(double meters) => (meters * 1000).ToString("G5", CultureInfo.InvariantCulture);
@@ -576,16 +613,43 @@ public sealed partial class MainPage : Page
         if (diagramCanvas == null || width < 180 || height < 100) return;
         diagramCanvas.Children.Clear();
 
-        Brush metal = ThemeBrush("AccentFillColorDefaultBrush", Color.FromArgb(255, 0, 120, 212));
-        Brush dielectric = ThemeBrush("LayerFillColorDefaultBrush", Color.FromArgb(255, 224, 234, 244));
+        Brush metal = new SolidColorBrush(Color.FromArgb(150, 239, 140, 48));
+        Brush dielectric = new SolidColorBrush(Color.FromArgb(105, 125, 132, 140));
         Brush outline = ThemeBrush("ControlStrokeColorDefaultBrush", Color.FromArgb(255, 115, 125, 135));
         Brush primary = ThemeBrush("TextFillColorPrimaryBrush", Color.FromArgb(255, 30, 30, 30));
         Brush secondary = ThemeBrush("TextFillColorSecondaryBrush", Color.FromArgb(255, 100, 100, 100));
 
         if (page == "siw")
             DrawSiwDiagram(width, height, metal, dielectric, outline, primary, secondary);
+        else if (page == "patch")
+            DrawPatchAntennaDiagram(width, height, metal, dielectric, outline, primary, secondary);
         else
             DrawTransmissionLineDiagram(width, height, metal, dielectric, outline, primary, secondary);
+    }
+
+    private void DrawPatchAntennaDiagram(double width, double height, Brush metal, Brush dielectric, Brush outline, Brush primary, Brush secondary)
+    {
+        double boardLeft = width * 0.17;
+        double boardWidth = width * 0.66;
+        double patchLeft = width * 0.35;
+        double patchWidth = width * 0.30;
+        double patchTop = height * 0.27;
+        double patchHeight = height * 0.24;
+
+        AddRectangle(boardLeft, height * 0.18, boardWidth, height * 0.38, dielectric, outline);
+        AddRectangle(patchLeft, patchTop, patchWidth, patchHeight, metal, outline);
+        AddDimensionHorizontal(patchLeft, patchLeft + patchWidth, height * 0.16, "W", secondary);
+        AddDimensionVertical(patchLeft + patchWidth + 18, patchTop, patchTop + patchHeight, "L", secondary);
+
+        double sectionTop = height * 0.70;
+        double substrateTop = sectionTop + 8;
+        double substrateHeight = height * 0.16;
+        AddRectangle(boardLeft, substrateTop, boardWidth, substrateHeight, dielectric, outline);
+        AddRectangle(patchLeft, sectionTop, patchWidth, 8, metal, outline);
+        AddRectangle(boardLeft, substrateTop + substrateHeight, boardWidth, 8, metal, outline);
+        AddDimensionVertical(boardLeft - 14, substrateTop, substrateTop + substrateHeight, "h", secondary);
+        AddLabel("εᵣ", boardLeft + 18, substrateTop + substrateHeight / 2 - 10, 42, 14, primary);
+        AddLabel(T("俯视 / 横截面", "Top / cross-section"), boardLeft, height * 0.91, boardWidth, 13, secondary);
     }
 
     private void DrawTransmissionLineDiagram(double width, double height, Brush metal, Brush dielectric, Brush outline, Brush primary, Brush secondary)

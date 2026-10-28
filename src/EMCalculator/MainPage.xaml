@@ -15,9 +15,13 @@
             </ResourceDictionary>
         </NavigationView.Resources>
         <NavigationView.MenuItems>
+            <NavigationViewItemHeader x:Name="BasicsHeader" />
             <NavigationViewItem x:Name="BandwidthNav" Tag="bandwidth" Icon="Calculator" IsTextScaleFactorEnabled="True" />
             <NavigationViewItem x:Name="ApertureNav" Tag="aperture" Icon="Globe" IsTextScaleFactorEnabled="True" />
             <NavigationViewItem x:Name="WavelengthNav" Tag="wavelength" Icon="World" IsTextScaleFactorEnabled="True" />
+            <NavigationViewItemHeader x:Name="AntennaDesignHeader" />
+            <NavigationViewItem x:Name="PatchNav" Tag="patch" Icon="World" IsTextScaleFactorEnabled="True" />
+            <NavigationViewItemHeader x:Name="StructuresHeader" />
             <NavigationViewItem x:Name="LineNav" Tag="line" Icon="Link" IsTextScaleFactorEnabled="True" />
             <NavigationViewItem x:Name="SiwNav" Tag="siw" Icon="AllApps" IsTextScaleFactorEnabled="True" />
         </NavigationView.MenuItems>

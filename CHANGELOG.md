@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.0 — 2026-10-28
+
+- Add an initial rectangular microstrip patch sizing calculator with a TM₁₀ dimension schematic.
+
 ## 0.5.0 — 2026-10-28
 
 - Add adaptive structure schematics for Microstrip, CPW, GCPW, Coaxial, and SIW via fences, with labels following current inputs.

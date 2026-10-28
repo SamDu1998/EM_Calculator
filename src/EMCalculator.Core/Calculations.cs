@@ -10,6 +10,7 @@ public sealed record ApertureResult(double WavelengthM, double EffectiveAreaM2, 
 public sealed record WavelengthResult(double Lambda0M, double LambdaGM, double HalfLambdaGM, double QuarterLambdaGM, double PhaseVelocityMPerS);
 public sealed record LineResult(double Z0Ohm, double EpsilonEff, double PhaseVelocityMPerS, bool OutsideValidatedRange = false);
 public sealed record SiwResult(double ViaDiameterM, double ViaPitchM, double EffectiveWidthM, double CutoffFrequencyHz, bool BelowCutoff);
+public sealed record PatchAntennaResult(double WidthM, double LengthM, double EpsilonEff, double LengthExtensionM, double EffectiveLengthM, bool OutsideValidatedRange);
 public enum LineType { Microstrip, Cpw, Gcpw, Coaxial }
 
 /// <summary>SI inputs. Quasi-static, lossless transmission-line models; zero conductor thickness.</summary>
@@ -51,6 +52,31 @@ public static class Calculations
         Positive(frequency, "frequency_not_positive"); Permittivity(er);
         double free = Finite(SpeedOfLight / frequency), guided = free / Math.Sqrt(er);
         return new(free, guided, guided / 2, guided / 4, SpeedOfLight / Math.Sqrt(er));
+    }
+    // Initial TM10 rectangular patch dimensions using the transmission-line model.
+    public static PatchAntennaResult RectangularPatch(double frequency, double er, double substrateHeight)
+    {
+        Positive(frequency, "frequency_not_positive");
+        Permittivity(er);
+        Positive(substrateHeight, "height_not_positive");
+
+        double freeSpaceWavelength = Finite(SpeedOfLight / frequency);
+        double width = Finite(freeSpaceWavelength / 2 * Math.Sqrt(2 / (er + 1)));
+        if (width <= 0) throw new CalculationException("out_of_range");
+
+        double widthToHeight = width / substrateHeight;
+        double heightToWidth = substrateHeight / width;
+        double epsilonEff = Finite((er + 1) / 2 + (er - 1) / 2 / Math.Sqrt(1 + 12 * heightToWidth));
+        double effectiveLength = Finite(freeSpaceWavelength / (2 * Math.Sqrt(epsilonEff)));
+        double deltaLength = Finite(0.412 * substrateHeight
+            * ((epsilonEff + 0.3) * (widthToHeight + 0.264))
+            / ((epsilonEff - 0.258) * (widthToHeight + 0.8)));
+        double length = Finite(effectiveLength - 2 * deltaLength);
+        if (length <= 0) throw new CalculationException("patch_length_not_positive");
+
+        bool outsideValidatedRange = !double.IsFinite(widthToHeight)
+            || widthToHeight < 0.01 || widthToHeight > 100 || er > 128;
+        return new(width, length, epsilonEff, deltaLength, effectiveLength, outsideValidatedRange);
     }
     // Hammerstad–Jensen (1980), negligible conductor thickness.
     public static LineResult Microstrip(double width, double height, double er)
